@@ -846,7 +846,12 @@ a.expired-project, button.expired-project, button.expired-project:hover {
 .fa-form-item.ant-form-item-has-error .ant-picker, .fa-form-item.ant-form-item-has-error .ant-input {
   border: 1px solid #f2726f;
 }
-
+.fa-form-item .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  border: none;
+}
+.fa-form-item .ant-cascader-picker:focus .ant-cascader-input {
+  box-shadow: none;
+}
 @media (max-width: 767px) {
   .remove-on-mobile {
     display: none;

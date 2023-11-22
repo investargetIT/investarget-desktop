@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { Steps, Card } from 'antd';
 import {
+  FormProjectBasicInfo,
   FormKickoffMeeting,
 } from './FormPreInvest';
 
@@ -29,12 +30,23 @@ function FaTimelineView() {
         </Steps>
       </div>
       <div style={{ flex: 1 }}>
-        <Card title="立项会" style={{ marginBottom: 20 }}>
-          <FormKickoffMeeting ref={kickoffMeetingformRef} />
-        </Card>
+        {current === 0 && (
+          <div>
+            <Card title="项目信息" style={{ marginBottom: 20 }}>
+              <FormProjectBasicInfo />
+            </Card>
+          </div>
+        )}
+        {current === 1 && (
+          <div>
+            <Card title="立项会" style={{ marginBottom: 20 }}>
+              <FormKickoffMeeting ref={kickoffMeetingformRef} />
+            </Card>
+            <Card title="立项材料" style={{ marginBottom: 20 }}>
+            </Card>
+          </div>
+        )}
 
-        <Card title="立项材料">
-        </Card>
       </div>
     </div>
   );

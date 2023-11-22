@@ -1455,6 +1455,12 @@ const ScheduleTypeOptions = [
 ];
 const SelectScheduleType = withOptions(SelectNumber, ScheduleTypeOptions);
 
+const SelectPriority = withOptions(SelectNumber, [
+  { label: '重要', value: 1 },
+  { label: '普通', value: 2 },
+  { label: '一般', value: 3 },
+]);
+
 const ScheduleTypeOptionsWithoutMeeting = [
   { label: '路演会议', value: 1 },
   { label: '约见公司', value: 2 },
@@ -2846,6 +2852,7 @@ export {
   SelectIndustryGroupWithAll,
   SelectNewBDStatus,
   SelectBDSource,
+  SelectPriority,
   SelectArea,
   SelectOrgUser,
   SelectOrgInvestor,

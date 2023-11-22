@@ -17,9 +17,10 @@ import {
   FaBasicFormItem,
   CurrencyFormItem,
   IndustryDynamicFormItem,
-} from '../components/Form'
+} from '../components/Form';
  
 import {
+  SelectPriority,
   TreeSelectTag,
   SelectRole,
   SelectYear,
@@ -77,123 +78,51 @@ SelectProjectStatus = connect(function(state) {
   return { options }
 })(SelectProjectStatus)
 
-class ProjectBaseForm1 extends React.Component {
+function ProjectBasicInfoForm(props) {
 
-  // static childContextTypes = {
-  //   form: PropTypes.object
-  // }
+  const [form] = Form.useForm();
 
-  // getChildContext() {
-  //   return { form: this.props.form }
-  // }
+  useEffect(() => {
+    const formValuesStr = localStorage.getItem('projectBasicInfoFormValues');
+    if (formValuesStr) {
+      const formValues = JSON.parse(formValuesStr);
+      form.setFieldsValue(formValues);
+    }
+    return () => {
+      form.validateFields()
+        .then(formValues => {
+          localStorage.setItem('projectBasicInfoFormValues', JSON.stringify(formValues));
+        });
+    };
+  }, []);
 
-  // constructor(props) {
-  //   super(props)
-  // }
+  return (
+    <Form ref={props.forwardedRef} form={form} className="fa-form">
+      <FaBasicFormItem label="项目名称" name="name" required>
+        <Input />
+      </FaBasicFormItem>
 
-  componentDidMount() {
-    this.props.dispatch({ type: 'app/getSourceList', payload: ['industry'] })
-  }
+      <FaBasicFormItem label="重要级别" name="priority" valueType="number">
+        <SelectPriority />
+      </FaBasicFormItem>
+      
+      <FaBasicFormItem label="所属行业" name="industry" valueType="number">
+        <CascaderIndustry disabled={[]} />
+      </FaBasicFormItem>
 
-  render() {
-    return (
-      <Form ref={this.props.forwardedRef} onValuesChange={this.props.onValuesChange}>
-        <BasicFormItem label={i18n('project.is_hidden')} name="isHidden" valueType="boolean">
-          <RadioTrueOrFalse />
-        </BasicFormItem>
+      <FaBasicFormItem label="总部城市" name="headquarter" valueType="number">
+        <CascaderCountry />
+      </FaBasicFormItem>
 
-        <BasicFormItem label="对应线索项目" name="projectBD" valueType="number">
-          <SelectProjectBD />
-        </BasicFormItem>
-
-        <BasicFormItem label={i18n('project.project_chinese_name')} name="projtitleC" required whitespace>
-          <Input />
-        </BasicFormItem>
-
-        <BasicFormItem label={i18n('project.project_english_name')} name="projtitleE" required whitespace>
-          <Input />
-        </BasicFormItem>
-
-        <BasicFormItem label={i18n('project.real_name')} name="realname" required whitespace>
-          <Input />
-        </BasicFormItem>
-
-        <BasicFormItem label={i18n('project.tags')} name="tags" valueType="array" required>
-          <TreeSelectTag />
-        </BasicFormItem>
-
-        <BasicFormItem label={i18n('project.industry_group')} name="indGroup" valueType="number">
-          <SelectIndustryGroup />
-        </BasicFormItem>
-
-        <FormItem noStyle shouldUpdate>
-          {({ getFieldValue, setFieldsValue }) => {
-            return (
-              <IndustryDynamicFormItem
-                industry={this.props.industry}
-                formRef={{ current: { getFieldValue, setFieldsValue } }} /> 
-            );
-          }}
-        </FormItem>
-
-        <BasicFormItem label={i18n('project.region')} name="country" required valueType="number">
-          <CascaderCountry size="large" />
-        </BasicFormItem>
-
-        {/* <BasicFormItem label={i18n('project.engagement_in_transaction')} name="character" required valueType="number">
-          <SelectRole />
-        </BasicFormItem>
-
-        <BasicFormItem label={i18n('project.transaction_type')} name="transactionType" required valueType="array">
-          <SelectTransactionType mode="multiple" />
-        </BasicFormItem>
-
-        <BasicFormItem label={i18n('project.service_type')} name="service" required valueType="array">
-          <SelectService mode="multiple" />
-        </BasicFormItem> */}
-
-        {/* <BasicFormItem label={i18n('project_bd.industry_group')} name="indGroup" valueType="number">
-          <SelectIndustryGroup />
-        </BasicFormItem> */}
-
-        <BasicFormItem label="上一轮项目" name="lastProject" valueType="number">
-          <SelectExistProject />
-        </BasicFormItem>
-
-        <BasicFormItem label="项目状态" name="projstatus" valueType="number">
-          <SelectProjectStatus />
-        </BasicFormItem>
-
-        <BasicFormItem label="飞书 URL" name="feishuurl" whitespace>
-          <Input />
-        </BasicFormItem>
-
-        <div className="edit-proj-status">
-          <Form.Item name="financeIsPublic" valuePropName="checked" wrapperCol={{ offset: 6, span: 14 }}>
-            <Checkbox>是否公开财务信息？</Checkbox>
-          </Form.Item>
-
-          <Form.Item name="isSendEmail" valuePropName="checked" wrapperCol={{ offset: 6, span: 14 }}>
-            <Checkbox>是否发送邮件？</Checkbox>
-          </Form.Item>
-
-          <Form.Item name="sendWechat" valuePropName="checked" wrapperCol={{ offset: 6, span: 14 }}>
-            <Checkbox>是否分享到微信群？</Checkbox>
-          </Form.Item>
-        </div>
-
-      </Form>
-    )
-  }
+      <FaBasicFormItem label="最新进展" name="latest">
+        <Input />
+      </FaBasicFormItem>
+    </Form>
+  );
 }
 
-function mapStateToPropsIndustry(state) {
-  const { industry } = state.app
-  return { industry }
-}
-// ProjectBaseForm = connect(mapStateToPropsIndustry)(ProjectBaseForm)
-const ConnectedProjectBaseForm = connect(mapStateToPropsIndustry)(ProjectBaseForm1);
-const ProjectBaseForm = React.forwardRef((props, ref) => <ConnectedProjectBaseForm {...props} forwardedRef={ref} />);
+const ConnectedProjectBaseForm = connect()(ProjectBasicInfoForm);
+const FormProjectBasicInfo = React.forwardRef((props, ref) => <ConnectedProjectBaseForm {...props} forwardedRef={ref} />);
 
 
 function KickoffMeetingForm(props) {
@@ -482,7 +411,7 @@ class ProjectDetailForm1 extends React.Component {
 const ProjectDetailForm = React.forwardRef((props, ref) => <ProjectDetailForm1 {...props} forwardedRef={ref} />);
 
 export {
-  ProjectBaseForm,
+  FormProjectBasicInfo,
   FormKickoffMeeting,
   ProjectDetailForm,
   ProjectConnectForm,
