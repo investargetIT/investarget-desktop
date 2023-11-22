@@ -3,6 +3,7 @@ import { Steps, Card } from 'antd';
 import {
   FormProjectBasicInfo,
   FormKickoffMeeting,
+  FormKickoffDocs,
 } from './FormPreInvest';
 
 const { Step } = Steps;
@@ -43,6 +44,7 @@ function FaTimelineView() {
               <FormKickoffMeeting ref={kickoffMeetingformRef} />
             </Card>
             <Card title="立项材料" style={{ marginBottom: 20 }}>
+              <FormKickoffDocs />
             </Card>
           </div>
         )}

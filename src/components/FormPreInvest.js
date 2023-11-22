@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { i18n, exchange, hasPerm, getCurrentUser, getCurrencyFromId } from '../utils/util'
+import { i18n, exchange, hasPerm, getCurrentUser, getCurrencyFromId, customRequest } from '../utils/util'
 import * as api from '../api'
 import styles from './ProjectForm.css'
 import moment from 'moment';
 
-import { Collapse, Form, Row, Col, Button, Icon, Input, Switch, Radio, Select, Cascader, InputNumber, Checkbox, DatePicker } from 'antd'
+import { Collapse, Form, Row, Col, Button, Icon, Input, Switch, Radio, Select, Cascader, InputNumber, Checkbox, DatePicker, Upload } from 'antd'
 const FormItem = Form.Item
 const Panel = Collapse.Panel
 const RadioGroup = Radio.Group
@@ -15,6 +15,7 @@ const InputGroup = Input.Group
 import {
   BasicFormItem,
   FaBasicFormItem,
+  FaUploadFormItem,
   CurrencyFormItem,
   IndustryDynamicFormItem,
 } from '../components/Form';
@@ -39,6 +40,7 @@ import {
   SelectExistProject,
   SelectProjectBD,
 } from '../components/ExtraInput'
+import { EditOutlined, DeleteOutlined , UploadOutlined } from '@ant-design/icons';
 
 class SelectProjectStatus extends React.Component {
 
@@ -171,6 +173,108 @@ function KickoffMeetingForm(props) {
 
 const ConnectedKickoffMeetingForm = connect()(KickoffMeetingForm);
 const FormKickoffMeeting = React.forwardRef((props, ref) => <ConnectedKickoffMeetingForm {...props} forwardedRef={ref} />);
+
+function KickoffDocsForm(props) {
+  
+  const [form] = Form.useForm();
+
+  useEffect(() => {
+    form.setFieldsValue({ fileType: '测试' });
+    // const formValuesStr = localStorage.getItem('kickoffDocsFormValues');
+    // if (formValuesStr) {
+    //   const formValues = JSON.parse(formValuesStr);
+    //   const date = moment(formValues.data)
+    //   form.setFieldsValue({ ...formValues, date });
+    // }
+    // return () => {
+    //   form.validateFields()
+    //     .then(formValues => {
+    //       localStorage.setItem('kickoffDocsFormValues', JSON.stringify(formValues));
+    //     });
+    // };
+  }, []);
+
+  const normFile = (e) => {
+    const fileList = Array.isArray(e) ? e : (e && e.fileList);
+    const file = fileList[0];
+    return file ? [
+      {
+        ...file,
+        bucket: file.response ? file.response.result.bucket : file.bucket,
+        key: file.response ? file.response.result.realfilekey : file.key,
+        url: file.response ? file.response.result.url : file.url,
+      },
+    ] : [];
+  };
+
+  const handleUploadChange = (e) => {
+    if (e.file.status === 'done') {
+      const file = e.file.originFileObj;
+      if (/\.(wav|flac|opus|m4a|mp3)$/.test(file.name)) {
+        setSpeechFile(file);
+      } else {
+        setSpeechFile(null);
+      }
+    }
+  };
+
+  const faUploadFormItemLayout = {
+    labelCol: {
+      xs: { span: 24 },
+      sm: { span: 16 },
+    },
+    wrapperCol: {
+      xs: { span: 24 },
+      sm: { span: 8 },
+    },
+  }
+
+  return (
+    <Form ref={props.forwardedRef} form={form} className="fa-form">
+      <Row style={{ borderRight: '1px solid #d9d9d9' }}>
+        <Col span={6}>
+          <Form.Item
+            className="fa-upload-form-item"
+            style={{ flex: 1 }}
+            label="立项报告"
+            labelAlign="left"
+            colon={false}
+            required
+            name="fileList"
+            valuePropName="fileList"
+            getValueFromEvent={normFile}
+            {...faUploadFormItemLayout}
+          >
+            <Upload
+              name="file"
+              customRequest={customRequest}
+              data={{ bucket: 'file' }}
+              maxCount={1}
+              onChange={handleUploadChange}
+            >
+              <Button icon={<UploadOutlined />} type="link" />
+            </Upload>
+
+          </Form.Item>
+        </Col>
+
+        <Col span={18} style={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #d9d9d9' }}>
+          <div style={{ flex: 1, padding: '0 10px' }}>会期生物尽职调查</div>
+          <div style={{ width: 100, padding: '0 10px' }}>2,428 KB</div>
+          <div style={{ width: 100, padding: '0 10px' }}>创建人</div>
+          <div style={{ width: 150, padding: '0 10px' }}>2022-10-02 13:50</div>
+        </Col>
+      </Row>
+
+      <FaBasicFormItem label="其它材料" name="otherDocs">
+        <Input />
+      </FaBasicFormItem>
+    </Form>
+  );
+}
+
+const ConnectedKickoffDocsForm = connect()(KickoffDocsForm);
+const FormKickoffDocs = React.forwardRef((props, ref) => <ConnectedKickoffDocsForm {...props} forwardedRef={ref} />);
 
 class ProjectConnectForm1 extends React.Component {
 
@@ -413,6 +517,7 @@ const ProjectDetailForm = React.forwardRef((props, ref) => <ProjectDetailForm1 {
 export {
   FormProjectBasicInfo,
   FormKickoffMeeting,
+  FormKickoffDocs,
   ProjectDetailForm,
   ProjectConnectForm,
 }

@@ -37,6 +37,16 @@ const faFormItemLayout = {
     sm: { span: 18 },
   },
 }
+const faUploadFormItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 4 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 2 },
+  },
+}
 const formItemLayoutWithOutLabel = {
   wrapperCol: {
     xs: { span: 24 },
@@ -147,6 +157,52 @@ const FaBasicFormItem = props => {
       label={props.label}
       style={props.style}
       {...(props.layout || faFormItemLayout)}
+      {...options}
+    >
+      {props.children}
+    </FormItem>
+  )
+}
+
+const FaUploadFormItem = props => {
+  const rules = [
+    { type: props.valueType, message: i18n('validation.not_valid')},
+    { required: props.required, message: i18n('validation.not_empty')},
+  ]
+
+  if (props.whitespace) {
+    rules.push({ whitespace: props.whitespace })
+  }
+  if (props.validator) {
+    rules.push({ validator: props.validator })
+  }
+
+  let options = { rules: rules }
+  if ('initialValue' in props) {
+    options.initialValue = props.initialValue
+  }
+  if ('valuePropName' in props) {
+    options.valuePropName = props.valuePropName
+  }
+  if ('onChange' in props) {
+    options.onChange = props.onChange
+  }
+  if ('getValueFromEvent' in props) {
+    options.getValueFromEvent = props.getValueFromEvent;
+  }
+  if ('hidden' in props) {
+    options.hidden = props.hidden;
+  }
+
+  return (
+    <FormItem
+      className="fa-upload-form-item"
+      labelAlign="left"
+      colon={false}
+      name={props.name}
+      label={props.label}
+      style={props.style}
+      {...(props.layout || faUploadFormItemLayout)}
       {...options}
     >
       {props.children}
@@ -579,6 +635,7 @@ module.exports = {
   UploadAvatar,
   BasicFormItem,
   FaBasicFormItem,
+  FaUploadFormItem,
   CurrencyFormItem,
   IndustryDynamicFormItem,
   Group

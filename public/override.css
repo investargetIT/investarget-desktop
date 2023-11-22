@@ -823,7 +823,7 @@ a.expired-project, button.expired-project, button.expired-project:hover {
   border-left: 1px solid #d9d9d9;
   border-top: 1px solid #d9d9d9;
 }
-.fa-form-item.ant-form-item {
+.fa-form-item.ant-form-item, .fa-upload-form-item.ant-form-item {
   margin-bottom: 0;
   align-items: center;
   border-right: 1px solid #d9d9d9;
@@ -834,7 +834,11 @@ a.expired-project, button.expired-project, button.expired-project:hover {
   padding-left: 12px;
   border-right: 1px solid #d9d9d9;
 }
-.fa-form-item.ant-form-item > .ant-form-item-label > label {
+.fa-upload-form-item.ant-form-item {
+  background-color: #eee;
+  padding-left: 12px;
+}
+.fa-form-item.ant-form-item > .ant-form-item-label > label, .fa-upload-form-item.ant-form-item > .ant-form-item-label > label {
   color: #616161;
 }
 .fa-form-item .ant-input, .fa-form-item .ant-picker {
