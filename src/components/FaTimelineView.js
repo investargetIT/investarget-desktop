@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Steps, Card } from 'antd';
 import {
-  ProjectFinanceForm,
+  FormKickoffMeeting,
 } from './FormPreInvest';
 
 const { Step } = Steps;
@@ -29,8 +29,8 @@ function FaTimelineView() {
         </Steps>
       </div>
       <div style={{ flex: 1 }}>
-        <Card title="立项材料">
-          <ProjectFinanceForm ref={formRef} />
+        <Card title="立项会">
+          <FormKickoffMeeting ref={formRef} />
         </Card>
       </div>
     </div>

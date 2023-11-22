@@ -5,7 +5,7 @@ import { i18n, exchange, hasPerm, getCurrentUser, getCurrencyFromId } from '../u
 import * as api from '../api'
 import styles from './ProjectForm.css'
 
-import { Collapse, Form, Row, Col, Button, Icon, Input, Switch, Radio, Select, Cascader, InputNumber, Checkbox } from 'antd'
+import { Collapse, Form, Row, Col, Button, Icon, Input, Switch, Radio, Select, Cascader, InputNumber, Checkbox, DatePicker } from 'antd'
 const FormItem = Form.Item
 const Panel = Collapse.Panel
 const RadioGroup = Radio.Group
@@ -194,105 +194,34 @@ const ConnectedProjectBaseForm = connect(mapStateToPropsIndustry)(ProjectBaseFor
 const ProjectBaseForm = React.forwardRef((props, ref) => <ConnectedProjectBaseForm {...props} forwardedRef={ref} />);
 
 
-class ProjectFinanceForm1 extends React.Component {
+function KickoffMeetingForm(props) {
+  return (
+    <Form ref={props.forwardedRef}>
+      <BasicFormItem label="会议日期" name="date" valueType="object" required>
+        <DatePicker />
+      </BasicFormItem>
 
-  static childContextTypes = {
-    form: PropTypes.object
-  }
+      <BasicFormItem label="会议主题" name="topic">
+        <Input />
+      </BasicFormItem>
+      
+      <BasicFormItem label="会议地点" name="address">
+        <Input />
+      </BasicFormItem>
 
-  getChildContext() {
-    return { form: this.props.form }
-  }
+      <BasicFormItem label="会议内容" name="content">
+        <Input />
+      </BasicFormItem>
 
-  constructor(props) {
-    super(props)
-  }
-
-  // 处理货币相关表单联动
-  handleCurrencyTypeChange = (currencyId, getFieldValue, setFieldsValue) => {
-    let currency = getCurrencyFromId(currencyId);
-    // 如果是虚拟货币的话，和美元同价
-    if (currency === 'USDT') {
-      currency = 'USD';
-    }
-    exchange(currency).then((rate) => {
-      const fields = ['financeAmount', 'companyValuation']
-      const values = {}
-      fields.forEach(field => {
-        let value = getFieldValue(field)
-        values[field + '_USD'] = value == undefined ? value : Math.round(value * rate)
-      })
-      setFieldsValue(values)
-    }, error => {
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
-    })
-  }
-
-  render() {
-    return (
-      <Form ref={this.props.forwardedRef}>
-        <BasicFormItem label={i18n('project.company_year')} name="companyYear" valueType="number">
-          <SelectYear />
-        </BasicFormItem>
-
-        <FormItem noStyle shouldUpdate>
-          {({ getFieldValue, setFieldsValue }) => {
-            return (
-              <BasicFormItem
-                label={i18n('project.currency')}
-                name="currency"
-                required
-                valueType="number"
-              >
-                <SelectCurrencyType onChange={value => this.handleCurrencyTypeChange(value, getFieldValue, setFieldsValue)} />
-              </BasicFormItem>
-            );
-          }}
-        </FormItem>
-
-        <Form.Item noStyle shouldUpdate>
-          {({ getFieldValue, setFieldsValue }) => {
-            return (
-              <CurrencyFormItem
-                label={i18n('project.transaction_size')}
-                name="financeAmount"
-                required
-                currencyType={getFieldValue('currency')}
-                setFieldsValue={setFieldsValue}
-              />
-            );
-          }}
-        </Form.Item>
-
-        <Form.Item noStyle shouldUpdate>
-          {({ getFieldValue, setFieldsValue }) => {
-            return (
-              <CurrencyFormItem
-                label={i18n('project.company_valuation')}
-                name="companyValuation"
-                currencyType={getFieldValue('currency')}
-                setFieldsValue={setFieldsValue}
-              />
-            );
-          }}
-        </Form.Item>
-
-        {/* <BasicFormItem label={i18n('project.disclose_financials')} name="financeIsPublic" valueType="boolean" valuePropName="checked">
-          <Switch checkedChildren={'ON'} unCheckedChildren={'OFF'} />
-        </BasicFormItem> */}
-
-
-      </Form>
-    )
-  }
+      <BasicFormItem label="内部参会人员" name="people">
+        <Input />
+      </BasicFormItem>
+    </Form>
+  );
 }
 
-const ConnectedProjectFinanceForm = connect(mapStateToPropsIndustry)(ProjectFinanceForm1);
-const ProjectFinanceForm = React.forwardRef((props, ref) => <ConnectedProjectFinanceForm {...props} forwardedRef={ref} />);
-
+const ConnectedKickoffMeetingForm = connect()(KickoffMeetingForm);
+const FormKickoffMeeting = React.forwardRef((props, ref) => <ConnectedKickoffMeetingForm {...props} forwardedRef={ref} />);
 
 class ProjectConnectForm1 extends React.Component {
 
@@ -534,7 +463,7 @@ const ProjectDetailForm = React.forwardRef((props, ref) => <ProjectDetailForm1 {
 
 export {
   ProjectBaseForm,
-  ProjectFinanceForm,
+  FormKickoffMeeting,
   ProjectDetailForm,
   ProjectConnectForm,
 }
