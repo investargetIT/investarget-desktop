@@ -1,12 +1,12 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { i18n, exchange, hasPerm, getCurrentUser, getCurrencyFromId, customRequest } from '../utils/util'
+import { i18n, exchange, hasPerm, getUserInfo, formatBytes, customRequest } from '../utils/util'
 import * as api from '../api'
 import styles from './ProjectForm.css'
 import moment from 'moment';
 
-import { Collapse, Form, Row, Col, Button, Icon, Input, Switch, Radio, Select, Cascader, InputNumber, Checkbox, DatePicker, Upload } from 'antd'
+import { Collapse, Form, Row, Col, Button, Icon, Input, Switch, Radio, Select, Cascader, InputNumber, Checkbox, DatePicker, Upload, Spin } from 'antd'
 const FormItem = Form.Item
 const Panel = Collapse.Panel
 const RadioGroup = Radio.Group
@@ -40,7 +40,7 @@ import {
   SelectExistProject,
   SelectProjectBD,
 } from '../components/ExtraInput'
-import { EditOutlined, DeleteOutlined , UploadOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined , UploadOutlined, LoadingOutlined } from '@ant-design/icons';
 
 class SelectProjectStatus extends React.Component {
 
@@ -178,6 +178,14 @@ function KickoffDocsForm(props) {
   
   const [form] = Form.useForm();
 
+  const [fileName, setFileName] = useState();
+  const [fileUrl, setFileUrl] = useState();
+  const [fileSize, setFileSize] = useState();
+  const [fileDate, setFileDate] = useState();
+  const [uploader, setUploader] = useState();
+
+  const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     form.setFieldsValue({ fileType: '测试' });
     // const formValuesStr = localStorage.getItem('kickoffDocsFormValues');
@@ -208,13 +216,21 @@ function KickoffDocsForm(props) {
   };
 
   const handleUploadChange = (e) => {
+    window.echo('e', e);
     if (e.file.status === 'done') {
-      const file = e.file.originFileObj;
-      if (/\.(wav|flac|opus|m4a|mp3)$/.test(file.name)) {
-        setSpeechFile(file);
-      } else {
-        setSpeechFile(null);
-      }
+      const { file } = e;
+      window.echo('file', file);
+      const { name, size, lastModified, response } = file;
+      const { url } = response.result;
+      setIsLoading(false);
+      setFileName(name);
+      setFileUrl(url);
+      setFileSize(size);
+      setFileDate(lastModified);
+      const currentUser = getUserInfo();
+      setUploader(currentUser.username)
+    } else {
+      setIsLoading(true);
     }
   };
 
@@ -251,18 +267,19 @@ function KickoffDocsForm(props) {
               data={{ bucket: 'file' }}
               maxCount={1}
               onChange={handleUploadChange}
+              showUploadList={false}
             >
-              <Button icon={<UploadOutlined />} type="link" />
+              <Button icon={isLoading ? <LoadingOutlined /> : <UploadOutlined />} type="link" />
             </Upload>
 
           </Form.Item>
         </Col>
 
         <Col span={18} style={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #d9d9d9' }}>
-          <div style={{ flex: 1, padding: '0 10px' }}>会期生物尽职调查</div>
-          <div style={{ width: 100, padding: '0 10px' }}>2,428 KB</div>
-          <div style={{ width: 100, padding: '0 10px' }}>创建人</div>
-          <div style={{ width: 150, padding: '0 10px' }}>2022-10-02 13:50</div>
+          <div style={{ flex: 1, padding: '0 10px' }}><a target="_blank" href={fileUrl}>{fileName}</a></div>
+          <div style={{ width: 100, padding: '0 10px' }}>{fileSize && formatBytes(fileSize)}</div>
+          <div style={{ width: 100, padding: '0 10px' }}>{uploader}</div>
+          <div style={{ width: 150, padding: '0 10px' }}>{fileDate && moment(fileDate).format('YYYY-MM-DD HH:mm')}</div>
         </Col>
       </Row>
 
