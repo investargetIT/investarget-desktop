@@ -1,5 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { Steps, Card } from 'antd';
+import {
+  ProjectFinanceForm,
+} from './FormPreInvest';
 
 const { Step } = Steps;
 
@@ -7,10 +10,9 @@ function FaTimelineView() {
   
   const [current, setCurrent] = useState(0);
 
-  useEffect(() => {}, []);
+  const formRef = useRef(null);
 
   const onChange = (value) => {
-    console.log('onChange:', current);
     setCurrent(value);
   };
 
@@ -27,7 +29,9 @@ function FaTimelineView() {
         </Steps>
       </div>
       <div style={{ flex: 1 }}>
-        <Card title="立项材料"></Card>
+        <Card title="立项材料">
+          <ProjectFinanceForm ref={formRef} />
+        </Card>
       </div>
     </div>
   );
