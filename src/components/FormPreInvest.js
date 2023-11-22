@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { i18n, exchange, hasPerm, getCurrentUser, getCurrencyFromId } from '../utils/util'
 import * as api from '../api'
 import styles from './ProjectForm.css'
+import moment from 'moment';
 
 import { Collapse, Form, Row, Col, Button, Icon, Input, Switch, Radio, Select, Cascader, InputNumber, Checkbox, DatePicker } from 'antd'
 const FormItem = Form.Item
@@ -196,8 +197,26 @@ const ProjectBaseForm = React.forwardRef((props, ref) => <ConnectedProjectBaseFo
 
 
 function KickoffMeetingForm(props) {
+  
+  const [form] = Form.useForm();
+
+  useEffect(() => {
+    const formValuesStr = localStorage.getItem('kickoffMeetingFormValues');
+    if (formValuesStr) {
+      const formValues = JSON.parse(formValuesStr);
+      const date = moment(formValues.data)
+      form.setFieldsValue({ ...formValues, date });
+    }
+    return () => {
+      form.validateFields()
+        .then(formValues => {
+          localStorage.setItem('kickoffMeetingFormValues', JSON.stringify(formValues));
+        });
+    };
+  }, []);
+
   return (
-    <Form ref={props.forwardedRef} className="fa-form">
+    <Form ref={props.forwardedRef} form={form} className="fa-form">
       <FaBasicFormItem label="会议日期" name="date" valueType="object" required>
         <DatePicker style={{ width: '100%' }} />
       </FaBasicFormItem>
