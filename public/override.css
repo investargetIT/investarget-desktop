@@ -840,6 +840,12 @@ a.expired-project, button.expired-project, button.expired-project:hover {
 .fa-form-item .ant-input, .fa-form-item .ant-picker {
   border: none;
 }
+.fa-form-item.ant-form-item .ant-form-item-explain {
+  display: none;
+}
+.fa-form-item.ant-form-item-has-error .ant-picker, .fa-form-item.ant-form-item-has-error .ant-input {
+  border: 1px solid #f2726f;
+}
 
 @media (max-width: 767px) {
   .remove-on-mobile {

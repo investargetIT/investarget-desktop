@@ -199,7 +199,7 @@ function KickoffMeetingForm(props) {
   return (
     <Form ref={props.forwardedRef} className="fa-form">
       <FaBasicFormItem label="会议日期" name="date" valueType="object" required>
-        <DatePicker style={{ width: '100%' }} placeholder="" />
+        <DatePicker style={{ width: '100%' }} />
       </FaBasicFormItem>
 
       <FaBasicFormItem label="会议主题" name="topic">

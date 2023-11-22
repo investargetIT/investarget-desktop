@@ -1,8 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Steps, Card } from 'antd';
 import {
   FormKickoffMeeting,
 } from './FormPreInvest';
+import moment from 'moment';
 
 const { Step } = Steps;
 
@@ -10,11 +11,22 @@ function FaTimelineView() {
   
   const [current, setCurrent] = useState(0);
 
-  const formRef = useRef(null);
+  const kickoffMeetingformRef = useRef(null);
 
   const onChange = (value) => {
-    setCurrent(value);
+    kickoffMeetingformRef.current.validateFields()
+      .then(formValues => {
+        localStorage.setItem('kickoffMeetingFormData', JSON.stringify(formValues));
+        setCurrent(value);
+      });
   };
+
+  useEffect(() => {
+    const kickoffMeetingFormValuesStr = localStorage.getItem('kickoffMeetingFormData');
+    const kickoffMeetingFormValues = JSON.parse(kickoffMeetingFormValuesStr);
+    const date = moment(kickoffMeetingFormValues.data)
+    kickoffMeetingformRef.current.setFieldsValue({ ...kickoffMeetingFormValues, date });
+  }, []);
 
   return (
     <div style={{ display: 'flex' }}>
@@ -29,8 +41,11 @@ function FaTimelineView() {
         </Steps>
       </div>
       <div style={{ flex: 1 }}>
-        <Card title="立项会">
-          <FormKickoffMeeting ref={formRef} />
+        <Card title="立项会" style={{ marginBottom: 20 }}>
+          <FormKickoffMeeting ref={kickoffMeetingformRef} />
+        </Card>
+
+        <Card title="立项材料">
         </Card>
       </div>
     </div>
