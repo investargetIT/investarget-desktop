@@ -40,7 +40,7 @@ import {
   SelectExistProject,
   SelectProjectBD,
 } from '../components/ExtraInput'
-import { EditOutlined, DeleteOutlined , UploadOutlined, LoadingOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined , CloudUploadOutlined, LoadingOutlined } from '@ant-design/icons';
 
 class SelectProjectStatus extends React.Component {
 
@@ -187,19 +187,16 @@ function KickoffDocsForm(props) {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    form.setFieldsValue({ fileType: '测试' });
-    // const formValuesStr = localStorage.getItem('kickoffDocsFormValues');
-    // if (formValuesStr) {
-    //   const formValues = JSON.parse(formValuesStr);
-    //   const date = moment(formValues.data)
-    //   form.setFieldsValue({ ...formValues, date });
-    // }
-    // return () => {
-    //   form.validateFields()
-    //     .then(formValues => {
-    //       localStorage.setItem('kickoffDocsFormValues', JSON.stringify(formValues));
-    //     });
-    // };
+    const formValuesStr = localStorage.getItem('kickoffDocsFormValues');
+    if (formValuesStr) {
+      const formValues = JSON.parse(formValuesStr);
+      const { fileName, fileUrl, fileSize, fileDate, uploader } = formValues;
+      setFileName(fileName);
+      setFileUrl(fileUrl);
+      setFileSize(fileSize);
+      setFileDate(fileDate);
+      setUploader(uploader);
+    }
   }, []);
 
   const normFile = (e) => {
@@ -216,10 +213,8 @@ function KickoffDocsForm(props) {
   };
 
   const handleUploadChange = (e) => {
-    window.echo('e', e);
     if (e.file.status === 'done') {
       const { file } = e;
-      window.echo('file', file);
       const { name, size, lastModified, response } = file;
       const { url } = response.result;
       setIsLoading(false);
@@ -229,6 +224,16 @@ function KickoffDocsForm(props) {
       setFileDate(lastModified);
       const currentUser = getUserInfo();
       setUploader(currentUser.username)
+
+      const formValues = {
+        fileName: name,
+        fileUrl: url,
+        fileSize: size,
+        fileDate: lastModified,
+        uploader: currentUser.username,
+      };
+      localStorage.setItem('kickoffDocsFormValues', JSON.stringify(formValues));
+
     } else {
       setIsLoading(true);
     }
@@ -269,7 +274,7 @@ function KickoffDocsForm(props) {
               onChange={handleUploadChange}
               showUploadList={false}
             >
-              <Button icon={isLoading ? <LoadingOutlined /> : <UploadOutlined />} type="link" />
+              <Button icon={isLoading ? <LoadingOutlined /> : <CloudUploadOutlined />} type="link" />
             </Upload>
 
           </Form.Item>
