@@ -126,6 +126,27 @@ function ProjectBasicInfoForm(props) {
 const ConnectedProjectBaseForm = connect()(ProjectBasicInfoForm);
 const FormProjectBasicInfo = React.forwardRef((props, ref) => <ConnectedProjectBaseForm {...props} forwardedRef={ref} />);
 
+function ProjectBasicInfoDocsForm(props) {
+  
+  const [form] = Form.useForm();
+
+  return (
+    <Form ref={props.forwardedRef} form={form} className="fa-form">
+      <FaUploadFormItem label="Teaser" name="teaser" required />
+      <FaUploadFormItem label="Memo" name="memo" />
+      <FaUploadFormItem label="BP" name="bp" />
+      <FaUploadFormItem label="Presentation" name="Presentation" />
+      <FaUploadFormItem label="Brochure" name="Brochure" />
+      <FaUploadFormItem label="Datapackage" name="Datapackage" />
+      <FaUploadFormItem label="FAQ" name="FAQ" />
+      <FaUploadFormItem label="Cap Table" name="CapTable" />
+      <FaUploadFormItem label="PB" name="PB" />
+    </Form>
+  );
+}
+
+const ConnectedProjectBasicInfoDocsForm = connect()(ProjectBasicInfoDocsForm);
+const FormProjectBasicInfoDocs = React.forwardRef((props, ref) => <ConnectedProjectBasicInfoDocsForm {...props} forwardedRef={ref} />);
 
 function KickoffMeetingForm(props) {
   
@@ -429,6 +450,7 @@ const ProjectDetailForm = React.forwardRef((props, ref) => <ProjectDetailForm1 {
 
 export {
   FormProjectBasicInfo,
+  FormProjectBasicInfoDocs,
   FormKickoffMeeting,
   FormKickoffDocs,
   ProjectDetailForm,

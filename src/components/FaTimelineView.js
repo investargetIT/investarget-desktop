@@ -4,6 +4,7 @@ import {
   FormProjectBasicInfo,
   FormKickoffMeeting,
   FormKickoffDocs,
+  FormProjectBasicInfoDocs,
 } from './FormPreInvest';
 
 const { Step } = Steps;
@@ -35,6 +36,9 @@ function FaTimelineView() {
           <div>
             <Card title="项目信息" style={{ marginBottom: 20 }}>
               <FormProjectBasicInfo />
+            </Card>
+            <Card title="项目材料" style={{ marginBottom: 20 }}>
+              <FormProjectBasicInfoDocs />
             </Card>
           </div>
         )}
