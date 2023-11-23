@@ -268,7 +268,7 @@ function InvestigationInfoForm(props) {
           </FaBasicFormItem>
         </div>
       </div>
-      
+
       <div style={{ display: 'flex' }}>
         <div style={{ flex: 1 }}>
           <FaBasicFormItem layout={layout} label="业务服务商" name="provider">
@@ -305,6 +305,34 @@ function InvestigationDocsForm(props) {
 const ConnectedInvestigationDocsForm = connect()(InvestigationDocsForm);
 const FormInvestigationDocs = React.forwardRef((props, ref) => <ConnectedInvestigationDocsForm {...props} forwardedRef={ref} />);
 
+function CommunicationMeetingForm(props) {
+  const [form] = Form.useForm();
+  useEffect(() => {
+    const formValuesStr = localStorage.getItem('communicationMeetingFormValues');
+    if (formValuesStr) {
+      const formValues = JSON.parse(formValuesStr);
+      form.setFieldsValue(formValues);
+    }
+    return () => {
+      form.validateFields()
+        .then(formValues => {
+          localStorage.setItem('communicationMeetingFormValues', JSON.stringify(formValues));
+        });
+    };
+  }, []);
+  return (
+    <Form ref={props.forwardedRef} form={form} className="fa-form">
+      <FaUploadFormItem label="投决报告" name="descisionReport" required />
+      <FaUploadFormItem label="预沟通会会议纪要" name="communicationMeetingSummary" />
+      <FaBasicFormItem label="预沟通会后跟进情况" name="communicationMeetingAfterwards">
+        <Input />
+      </FaBasicFormItem>
+    </Form>
+  );
+}
+const ConnectedCommunicationMeetingForm = connect()(CommunicationMeetingForm);
+const FormCommunicationMeeting = React.forwardRef((props, ref) => <ConnectedCommunicationMeetingForm {...props} forwardedRef={ref} />);
+
 export {
   FormProjectBasicInfo,
   FormProjectBasicInfoDocs,
@@ -312,4 +340,5 @@ export {
   FormKickoffDocs,
   FormInvestigationInfo,
   FormInvestigationDocs,
+  FormCommunicationMeeting,
 };
