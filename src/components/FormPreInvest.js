@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { i18n, exchange, hasPerm, getUserInfo, formatBytes, customRequest } from '../utils/util'
+import { i18n, exchange, hasPerm, getUserInfo, formatBytes, customRequest, getFileTypeByName, getFileIconByType } from '../utils/util'
 import * as api from '../api'
 import styles from './ProjectForm.css'
 import moment from 'moment';
@@ -216,24 +216,26 @@ function KickoffDocsForm(props) {
     if (e.file.status === 'done') {
       const { file } = e;
       const { name, size, lastModified, response } = file;
-      const { url } = response.result;
-      setIsLoading(false);
-      setFileName(name);
-      setFileUrl(url);
-      setFileSize(size);
-      setFileDate(lastModified);
-      const currentUser = getUserInfo();
-      setUploader(currentUser.username)
+      const { bucket, key, realfilekey, url } = response.result;
+      api.downloadUrl(bucket, realfilekey).then(result => {
+        const downloadUrl = result.data;
+        setIsLoading(false);
+        setFileName(name);
+        setFileUrl(downloadUrl);
+        setFileSize(size);
+        setFileDate(lastModified);
+        const currentUser = getUserInfo();
+        setUploader(currentUser.username)
 
-      const formValues = {
-        fileName: name,
-        fileUrl: url,
-        fileSize: size,
-        fileDate: lastModified,
-        uploader: currentUser.username,
-      };
-      localStorage.setItem('kickoffDocsFormValues', JSON.stringify(formValues));
-
+        const formValues = {
+          fileName: name,
+          fileUrl: downloadUrl,
+          fileSize: size,
+          fileDate: lastModified,
+          uploader: currentUser.username,
+        };
+        localStorage.setItem('kickoffDocsFormValues', JSON.stringify(formValues));
+      })
     } else {
       setIsLoading(true);
     }
@@ -281,7 +283,10 @@ function KickoffDocsForm(props) {
         </Col>
 
         <Col span={18} style={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #d9d9d9' }}>
-          <div style={{ flex: 1, padding: '0 10px' }}><a target="_blank" href={fileUrl}>{fileName}</a></div>
+          <div style={{ flex: 1, padding: '0 10px' }}>
+            {fileName && getFileIconByType(getFileTypeByName(fileName))}
+            <a target="_blank" href={fileUrl}>{fileName}</a>
+          </div>
           <div style={{ width: 100, padding: '0 10px' }}>{fileSize && formatBytes(fileSize)}</div>
           <div style={{ width: 100, padding: '0 10px' }}>{uploader}</div>
           <div style={{ width: 150, padding: '0 10px' }}>{fileDate && moment(fileDate).format('YYYY-MM-DD HH:mm')}</div>
