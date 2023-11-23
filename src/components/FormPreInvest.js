@@ -402,6 +402,28 @@ function DecisionMeetingForm(props) {
 const ConnectedDecisionMeetingForm = connect()(DecisionMeetingForm);
 const FormDecisionMeeting = React.forwardRef((props, ref) => <ConnectedDecisionMeetingForm {...props} forwardedRef={ref} />);
 
+function InvestmentDocsForm(props) {
+  const [form] = Form.useForm();
+  return (
+    <Form ref={props.forwardedRef} form={form} className="fa-form">
+      <FaUploadFormItem label="投资协议" name="investmentAgreements" required />
+      <FaUploadFormItem label="退出协议" name="withdrawAgreements" required />
+      <FaUploadFormItem label="他方投资" name="thirdPartyInvestment" />
+      <FaUploadFormItem label="老股转让" name="stockTransfer" />
+      <FaUploadFormItem label="ESOP" name="esop" />
+      <FaUploadFormItem label="股改" name="stockUpdate" />
+      <FaUploadFormItem label="重组" name="chongzu" />
+      <FaUploadFormItem label="其他" name="qita" />
+      <FaUploadFormItem label="减资" name="jianzi" />
+      <FaUploadFormItem label="债权投资" name="zhaiquantouzi" />
+      <FaUploadFormItem label="资本公积转增" name="zibengongjizhuanzen" />
+      <FaUploadFormItem label="分拆" name="fenchai" />
+    </Form>
+  );
+}
+const ConnectedInvestmentDocsForm = connect()(InvestmentDocsForm);
+const FormInvestmentDocs = React.forwardRef((props, ref) => <ConnectedInvestmentDocsForm {...props} forwardedRef={ref} />);
+
 export {
   FormProjectBasicInfo,
   FormProjectBasicInfoDocs,
@@ -411,4 +433,5 @@ export {
   FormInvestigationDocs,
   FormCommunicationMeeting,
   FormDecisionMeeting,
+  FormInvestmentDocs,
 };

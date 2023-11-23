@@ -9,6 +9,7 @@ import {
   FormInvestigationDocs,
   FormCommunicationMeeting,
   FormDecisionMeeting,
+  FormInvestmentDocs,
 } from './FormPreInvest';
 
 const { Step } = Steps;
@@ -75,6 +76,11 @@ function FaTimelineView() {
               <FormDecisionMeeting />
             </Card>
           </div>
+        )}
+        {current === 4 && (
+          <Card title="协议信息" style={{ marginBottom: 20 }}>
+            <FormInvestmentDocs />
+          </Card>
         )}
       </div>
     </div>
