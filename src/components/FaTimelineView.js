@@ -2,9 +2,10 @@ import React, { useState, useRef } from 'react';
 import { Steps, Card } from 'antd';
 import {
   FormProjectBasicInfo,
+  FormProjectBasicInfoDocs,
   FormKickoffMeeting,
   FormKickoffDocs,
-  FormProjectBasicInfoDocs,
+  FormInvestigationDocs,
 } from './FormPreInvest';
 
 const { Step } = Steps;
@@ -52,7 +53,16 @@ function FaTimelineView() {
             </Card>
           </div>
         )}
-
+        {current === 2 && (
+          <div>
+            <Card title="尽调机构" style={{ marginBottom: 20 }}>
+              <FormProjectBasicInfo />
+            </Card>
+            <Card title="尽调文档" style={{ marginBottom: 20 }}>
+              <FormInvestigationDocs />
+            </Card>
+          </div>
+        )}
       </div>
     </div>
   );

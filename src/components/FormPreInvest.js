@@ -210,168 +210,21 @@ function KickoffDocsForm(props) {
 const ConnectedKickoffDocsForm = connect()(KickoffDocsForm);
 const FormKickoffDocs = React.forwardRef((props, ref) => <ConnectedKickoffDocsForm {...props} forwardedRef={ref} />);
 
-class ProjectConnectForm1 extends React.Component {
-
-  static childContextTypes = {
-    form: PropTypes.object
-  }
-
-  getChildContext() {
-    return { form: this.props.form }
-  }
-
-  constructor(props) {
-    super(props)
-
-    // const { getFieldDecorator } = this.props.form
-    this.currentUserId = getCurrentUser()
-  }
-
-  phoneNumberValidator = (_, value) => {
-    const isPhoneNumber = /([0-9]+)-([0-9]+)/
-    if (isPhoneNumber.test(value)) {
-      return Promise.resolve();
-    } else {
-      return Promise.reject(i18n('validation.please_input_correct_phone_number'));
-    }
-  }
-
-  isCurrentUserSupportUser = getFieldValue => {
-    const supportUser = getFieldValue('supportUser');
-    if (!supportUser) return false;
-    return this.currentUserId === supportUser.id;
-  }
-
-  // projectTeamValidator = (_, value, callback) => {
-  //   if (value.length === 1) return callback('请至少选择两位项目团队成员');
-  //   return callback();
-  // }
-
-  render() {
-    return (
-      <Form ref={this.props.forwardedRef}>
-        <Form.Item noStyle shouldUpdate>
-          {({ getFieldValue }) => {
-            if (this.isCurrentUserSupportUser(getFieldValue) || hasPerm('proj.get_secretinfo')) {
-              return (
-                <BasicFormItem
-                  label={i18n('project.contact_person')}
-                  name="contactPerson"
-                  required
-                  whitespace
-                >
-                  <Input />
-                </BasicFormItem>
-              );
-            }
-          }}
-        </Form.Item>
-
-        <Form.Item noStyle shouldUpdate>
-          {({ getFieldValue }) => {
-            if (this.isCurrentUserSupportUser(getFieldValue) || hasPerm('proj.get_secretinfo')) {
-              return (
-                <BasicFormItem
-                  label={i18n('project.phone')}
-                  name="phoneNumber"
-                  required
-                  validator={this.phoneNumberValidator}
-                >
-                  <InputPhoneNumber />
-                </BasicFormItem>
-              );
-            }
-          }}
-        </Form.Item>
-
-        <Form.Item noStyle shouldUpdate>
-          {({ getFieldValue }) => {
-            if (this.isCurrentUserSupportUser(getFieldValue) || hasPerm('proj.get_secretinfo')) {
-              return (
-                <BasicFormItem label={i18n('project.email')} name="email" required valueType="email">
-                  <Input type="email" />
-                </BasicFormItem>
-              );
-            }
-          }}
-        </Form.Item>
-
-        <Form.Item noStyle shouldUpdate>
-          {({ getFieldValue }) => {
-            if (this.isCurrentUserSupportUser(getFieldValue) || hasPerm('proj.get_secretinfo')) {
-              return (
-                <BasicFormItem label={i18n('project.uploader')} name="supportUserName" initialValue={this.currentUserId}>
-                  <Input disabled />
-                </BasicFormItem>
-              );
-            }
-          }}
-        </Form.Item>
-
-        <BasicFormItem label="项目发起人" name="sponsor" valueType="number">
-          <SelectAllUser type="trader" />
-        </BasicFormItem>
-        
-        {/* {hasPerm('proj.admin_manageproj') ? */}
-          <Form.Item noStyle shouldUpdate>
-            {({ getFieldValue }) => {
-              return (
-                <BasicFormItem label="开发团队" name="takeUser" valueType="array">
-                  {/* <SelectAllUser type="trader" /> */}
-                  <SelectTrader
-                    mode="multiple"
-                    // disabledOption={getFieldValue('makeUser')}
-                  />
-                </BasicFormItem>
-              );
-            }}
-          </Form.Item>
-          {/* :
-          <BasicFormItem label={i18n('project.development')} name="takeUserName">
-            <Input disabled />
-          </BasicFormItem>
-        } */}
-
-        {/* {hasPerm('proj.admin_manageproj') ? */}
-          <Form.Item noStyle shouldUpdate>
-            {({ getFieldValue }) => {
-              return (
-                <BasicFormItem label="执行团队" name="makeUser" valueType="array">
-                  {/* <SelectAllUser type="trader" /> */}
-                  <SelectTrader
-                    mode="multiple"
-                    // disabledOption={getFieldValue('takeUser')}
-                  />
-                </BasicFormItem>
-              );
-            }}
-          </Form.Item>
-          {/* :
-          <BasicFormItem label={i18n('project.team')} name="makeUserName">
-            <Input disabled />
-          </BasicFormItem> */}
-        {/* } */}
-
-        {/* {hasPerm('proj.admin_manageproj') ? */}
-          <Form.Item noStyle shouldUpdate>
-            {({ getFieldValue }) => {
-              return (
-                <BasicFormItem label="项目经理" name="PM">
-                  <SelectTrader />
-                </BasicFormItem>
-              );
-            }}
-          </Form.Item>
-          {/* :
-          <BasicFormItem label="PM" name="PMName">
-            <Input disabled />
-          </BasicFormItem>
-        } */}
-      </Form>
-    )
-  }
+function InvestigationDocsForm(props) {
+  const [form] = Form.useForm();
+  return (
+    <Form ref={props.forwardedRef} form={form} className="fa-form">
+      <FaUploadFormItem label="尽调文件" name="investigationDocs" required />
+      <FaUploadFormItem label="TS签署版" name="ts" required />
+      <FaUploadFormItem label="尽调访谈计划" name="interviewPlan" />
+      <FaUploadFormItem label="尽调访谈纪要" name="interviewSummary" />
+      <FaUploadFormItem label="财务尽调报告" name="financialReport" />
+      <FaUploadFormItem label="法律尽调报告" name="lawReport" />
+    </Form>
+  );
 }
-const ProjectConnectForm = React.forwardRef((props, ref) => <ProjectConnectForm1 {...props} forwardedRef={ref} />);
+const ConnectedInvestigationDocsForm = connect()(InvestigationDocsForm);
+const FormInvestigationDocs = React.forwardRef((props, ref) => <ConnectedInvestigationDocsForm {...props} forwardedRef={ref} />);
 
 
 class ProjectDetailForm1 extends React.Component {
@@ -454,5 +307,5 @@ export {
   FormKickoffMeeting,
   FormKickoffDocs,
   ProjectDetailForm,
-  ProjectConnectForm,
+  FormInvestigationDocs,
 }
