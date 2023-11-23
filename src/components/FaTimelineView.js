@@ -40,11 +40,11 @@ function FaTimelineView() {
         )}
         {current === 1 && (
           <div>
-            <Card title="立项会" style={{ marginBottom: 20 }}>
-              <FormKickoffMeeting ref={kickoffMeetingformRef} />
-            </Card>
             <Card title="立项材料" style={{ marginBottom: 20 }}>
               <FormKickoffDocs />
+            </Card>
+            <Card title="立项会" style={{ marginBottom: 20 }}>
+              <FormKickoffMeeting ref={kickoffMeetingformRef} />
             </Card>
           </div>
         )}

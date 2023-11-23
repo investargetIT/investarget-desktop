@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Icon, Upload, Cascader, Checkbox, Form, Input, InputNumber, Select, Row, Col, Button, Radio } from 'antd'
-import { i18n, exchange, handleError, getCurrencyFromId, customRequest } from '../utils/util'
+import { i18n, exchange, handleError, getCurrencyFromId, customRequest, getFileIconByType, getFileTypeByName, formatBytes, getUserInfo } from '../utils/util'
 import PropTypes from 'prop-types'
 import { Link } from 'dva/router'
 import { InputCurrency, CascaderIndustry } from './ExtraInput'
@@ -11,7 +11,10 @@ import {
   PlusOutlined,
   PlusCircleOutlined,
   MinusCircleOutlined,
+  LoadingOutlined,
+  CloudUploadOutlined,
 } from '@ant-design/icons';
+import moment from 'moment';
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -165,49 +168,121 @@ const FaBasicFormItem = props => {
 }
 
 const FaUploadFormItem = props => {
-  const rules = [
-    { type: props.valueType, message: i18n('validation.not_valid')},
-    { required: props.required, message: i18n('validation.not_empty')},
-  ]
 
-  if (props.whitespace) {
-    rules.push({ whitespace: props.whitespace })
-  }
-  if (props.validator) {
-    rules.push({ validator: props.validator })
-  }
+  const [fileName, setFileName] = useState();
+  const [fileUrl, setFileUrl] = useState();
+  const [fileSize, setFileSize] = useState();
+  const [fileDate, setFileDate] = useState();
+  const [uploader, setUploader] = useState();
 
-  let options = { rules: rules }
-  if ('initialValue' in props) {
-    options.initialValue = props.initialValue
-  }
-  if ('valuePropName' in props) {
-    options.valuePropName = props.valuePropName
-  }
-  if ('onChange' in props) {
-    options.onChange = props.onChange
-  }
-  if ('getValueFromEvent' in props) {
-    options.getValueFromEvent = props.getValueFromEvent;
-  }
-  if ('hidden' in props) {
-    options.hidden = props.hidden;
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const formValuesStr = localStorage.getItem(props.name);
+    if (formValuesStr) {
+      const formValues = JSON.parse(formValuesStr);
+      const { fileName, fileUrl, fileSize, fileDate, uploader } = formValues;
+      setFileName(fileName);
+      setFileUrl(fileUrl);
+      setFileSize(fileSize);
+      setFileDate(fileDate);
+      setUploader(uploader);
+    }
+  }, []);
+
+  const normFile = (e) => {
+    const fileList = Array.isArray(e) ? e : (e && e.fileList);
+    const file = fileList[0];
+    return file ? [
+      {
+        ...file,
+        bucket: file.response ? file.response.result.bucket : file.bucket,
+        key: file.response ? file.response.result.realfilekey : file.key,
+        url: file.response ? file.response.result.url : file.url,
+      },
+    ] : [];
+  };
+
+  const handleUploadChange = (e) => {
+    if (e.file.status === 'done') {
+      const { file } = e;
+      const { name, size, lastModified, response } = file;
+      const { bucket, key, realfilekey, url } = response.result;
+      api.downloadUrl(bucket, realfilekey).then(result => {
+        const downloadUrl = result.data;
+        setIsLoading(false);
+        setFileName(name);
+        setFileUrl(downloadUrl);
+        setFileSize(size);
+        setFileDate(lastModified);
+        const currentUser = getUserInfo();
+        setUploader(currentUser.username)
+
+        const formValues = {
+          fileName: name,
+          fileUrl: downloadUrl,
+          fileSize: size,
+          fileDate: lastModified,
+          uploader: currentUser.username,
+        };
+        localStorage.setItem(props.name, JSON.stringify(formValues));
+      })
+    } else {
+      setIsLoading(true);
+    }
+  };
+
+  const faUploadFormItemLayout = {
+    labelCol: {
+      xs: { span: 24 },
+      sm: { span: 18 },
+    },
+    wrapperCol: {
+      xs: { span: 24 },
+      sm: { span: 6 },
+    },
   }
 
   return (
-    <FormItem
-      className="fa-upload-form-item"
-      labelAlign="left"
-      colon={false}
-      name={props.name}
-      label={props.label}
-      style={props.style}
-      {...(props.layout || faUploadFormItemLayout)}
-      {...options}
-    >
-      {props.children}
-    </FormItem>
-  )
+    <Row style={{ borderRight: '1px solid #d9d9d9' }}>
+      <Col span={6}>
+        <Form.Item
+          className="fa-upload-form-item"
+          style={{ flex: 1 }}
+          label={props.label}
+          labelAlign="left"
+          colon={false}
+          required={props.required}
+          name="fileList"
+          valuePropName="fileList"
+          getValueFromEvent={normFile}
+          {...faUploadFormItemLayout}
+        >
+          <Upload
+            name="file"
+            customRequest={customRequest}
+            data={{ bucket: 'file' }}
+            maxCount={1}
+            onChange={handleUploadChange}
+            showUploadList={false}
+          >
+            <Button icon={isLoading ? <LoadingOutlined /> : <CloudUploadOutlined />} type="link" />
+          </Upload>
+
+        </Form.Item>
+      </Col>
+
+      <Col span={18} style={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #d9d9d9' }}>
+        <div style={{ flex: 1, padding: '0 10px' }}>
+          {fileName && getFileIconByType(getFileTypeByName(fileName))}
+          <a target="_blank" href={fileUrl}>{fileName}</a>
+        </div>
+        <div style={{ width: 100, padding: '0 10px' }}>{fileSize && formatBytes(fileSize)}</div>
+        <div style={{ width: 100, padding: '0 10px' }}>{uploader}</div>
+        <div style={{ width: 150, padding: '0 10px' }}>{fileDate && moment(fileDate).format('YYYY-MM-DD HH:mm')}</div>
+      </Col>
+    </Row>
+  );
 }
 
 const Email = props => <BasicFormItem label={i18n("account.email")} name="email" valueType="email" required><Input size="large" onBlur={props.onBlur}/></BasicFormItem>
