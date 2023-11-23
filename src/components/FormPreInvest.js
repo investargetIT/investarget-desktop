@@ -210,6 +210,85 @@ function KickoffDocsForm(props) {
 const ConnectedKickoffDocsForm = connect()(KickoffDocsForm);
 const FormKickoffDocs = React.forwardRef((props, ref) => <ConnectedKickoffDocsForm {...props} forwardedRef={ref} />);
 
+function InvestigationInfoForm(props) {
+
+  const [form] = Form.useForm();
+
+  useEffect(() => {
+    const formValuesStr = localStorage.getItem('investigationInfoFormValues');
+    if (formValuesStr) {
+      const formValues = JSON.parse(formValuesStr);
+      form.setFieldsValue(formValues);
+    }
+    return () => {
+      form.validateFields()
+        .then(formValues => {
+          localStorage.setItem('investigationInfoFormValues', JSON.stringify(formValues));
+        });
+    };
+  }, []);
+
+  const layout = {
+    labelCol: {
+      xs: { span: 24 },
+      sm: { span: 12 },
+    },
+    wrapperCol: {
+      xs: { span: 24 },
+      sm: { span: 12 },
+    },
+  }
+
+  return (
+    <Form ref={props.forwardedRef} form={form} className="fa-form">
+      <div style={{ display: 'flex' }}>
+        <div style={{ flex: 1 }}>
+          <FaBasicFormItem layout={layout} label="律师事务所" name="lawoffice">
+            <Input />
+          </FaBasicFormItem>
+        </div>
+
+        <div style={{ flex: 1 }}>
+          <FaBasicFormItem layout={layout} label="服务人员" name="lawofficePeople">
+            <Input />
+          </FaBasicFormItem>
+        </div>
+      </div>
+
+      <div style={{ display: 'flex' }}>
+        <div style={{ flex: 1 }}>
+          <FaBasicFormItem layout={layout} label="会计事务所" name="accountoffice">
+            <Input />
+          </FaBasicFormItem>
+        </div>
+
+        <div style={{ flex: 1 }}>
+          <FaBasicFormItem layout={layout} label="服务人员" name="accountant">
+            <Input />
+          </FaBasicFormItem>
+        </div>
+      </div>
+      
+      <div style={{ display: 'flex' }}>
+        <div style={{ flex: 1 }}>
+          <FaBasicFormItem layout={layout} label="业务服务商" name="provider">
+            <Input />
+          </FaBasicFormItem>
+        </div>
+
+        <div style={{ flex: 1 }}>
+          <FaBasicFormItem layout={layout} label="服务人员" name="vendorPeople">
+            <Input />
+          </FaBasicFormItem>
+        </div>
+      </div>
+    </Form>
+  );
+}
+
+const ConnectedInvestigationInfoForm = connect()(InvestigationInfoForm);
+const FormInvestigationInfo = React.forwardRef((props, ref) => <ConnectedInvestigationInfoForm {...props} forwardedRef={ref} />);
+
 function InvestigationDocsForm(props) {
   const [form] = Form.useForm();
   return (
@@ -226,86 +305,11 @@ function InvestigationDocsForm(props) {
 const ConnectedInvestigationDocsForm = connect()(InvestigationDocsForm);
 const FormInvestigationDocs = React.forwardRef((props, ref) => <ConnectedInvestigationDocsForm {...props} forwardedRef={ref} />);
 
-
-class ProjectDetailForm1 extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-
-  render() {
-    return (
-      <Form ref={this.props.forwardedRef}>
-        <BasicFormItem label="公司简介" name="p_introducteC" initialValue={''}>
-          <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-        </BasicFormItem>
-        <BasicFormItem label="Company Introduction" name="p_introducteE" initialValue={''}>
-          <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-        </BasicFormItem>
-        <BasicFormItem label="目标市场" name="targetMarketC" initialValue={''}>
-          <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-        </BasicFormItem>
-        <BasicFormItem label="Target Market" name="targetMarketE" initialValue={''}>
-          <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-        </BasicFormItem>
-        <BasicFormItem label="核心产品" name="productTechnologyC" initialValue={''}>
-          <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-        </BasicFormItem>
-        <BasicFormItem label="Core Product" name="productTechnologyE" initialValue={''}>
-          <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-        </BasicFormItem>
-        <BasicFormItem label="商业模式" name="businessModelC" initialValue={''}>
-          <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-        </BasicFormItem>
-        <BasicFormItem label="Business Model" name="businessModelE" initialValue={''}>
-          <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-        </BasicFormItem>
-        <BasicFormItem label="品牌渠道" name="brandChannelC" initialValue={''}>
-          <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-        </BasicFormItem>
-        <BasicFormItem label="Brand Channel" name="brandChannelE" initialValue={''}>
-          <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-        </BasicFormItem>
-        <BasicFormItem label="管理团队" name="managementTeamC" initialValue={''}>
-          <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-        </BasicFormItem>
-        <BasicFormItem label="Management Team" name="managementTeamE" initialValue={''}>
-          <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-        </BasicFormItem>
-        <BasicFormItem label="商业伙伴" name="BusinesspartnersC" initialValue={''}>
-          <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-        </BasicFormItem>
-        <BasicFormItem label="Business Partner" name="BusinesspartnersE" initialValue={''}>
-          <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-        </BasicFormItem>
-        <BasicFormItem label="资金用途" name="useOfProceedC" initialValue={''}>
-          <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-        </BasicFormItem>
-        <BasicFormItem label="Use of Proceeds" name="useOfProceedE" initialValue={''}>
-          <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-        </BasicFormItem>
-        <BasicFormItem label="融资历史" name="financingHistoryC" initialValue={''}>
-          <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-        </BasicFormItem>
-        <BasicFormItem label="Financing History" name="financingHistoryE" initialValue={''}>
-          <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-        </BasicFormItem>
-        <BasicFormItem label="经营数据" name="operationalDataC" initialValue={''}>
-          <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-        </BasicFormItem>
-        <BasicFormItem label="Operational Data" name="operationalDataE" initialValue={''}>
-          <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-        </BasicFormItem>
-      </Form>
-    )
-  }
-}
-const ProjectDetailForm = React.forwardRef((props, ref) => <ProjectDetailForm1 {...props} forwardedRef={ref} />);
-
 export {
   FormProjectBasicInfo,
   FormProjectBasicInfoDocs,
   FormKickoffMeeting,
   FormKickoffDocs,
-  ProjectDetailForm,
+  FormInvestigationInfo,
   FormInvestigationDocs,
-}
+};
