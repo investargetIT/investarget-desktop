@@ -838,11 +838,17 @@ a.expired-project, button.expired-project, button.expired-project:hover {
   background-color: #eee;
   padding-left: 12px;
 }
+.fa-upload-form-item.ant-form-item > .ant-form-item-label, .fa-form-item.ant-form-item > .ant-form-item-label {
+  white-space: unset;
+  line-height: 1.5;
+}
 .fa-form-item.ant-form-item > .ant-form-item-label > label {
-  height: 36px;
+  min-height: 36px;
+  height: unset;
 }
 .fa-upload-form-item.ant-form-item > .ant-form-item-label > label {
-  height: 64px;
+  min-height: 64px;
+  height: unset;
 }
 .fa-form-item.ant-form-item > .ant-form-item-label > label, .fa-upload-form-item.ant-form-item > .ant-form-item-label > label {
   color: #616161;
