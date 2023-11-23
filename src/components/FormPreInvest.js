@@ -42,44 +42,6 @@ import {
 } from '../components/ExtraInput'
 import { EditOutlined, DeleteOutlined , CloudUploadOutlined, LoadingOutlined } from '@ant-design/icons';
 
-class SelectProjectStatus extends React.Component {
-
-  handleChange = (value) => {
-    this.props.onChange(Number(value))
-  }
-
-  componentDidMount() {
-    this.props.dispatch({ type: 'app/getSourceList', payload: ['projstatus'] })
-  }
-
-  render() {
-    const {options, children, dispatch, status, value, onChange, ...extraProps} = this.props
-    let _options = []
-
-    if (status < 4) {
-      _options = options.filter(item => item.value <= status + 1)
-    } else {
-      _options = options
-    }
-
-    return (
-      <Select value={String(value)} onChange={this.handleChange} {...extraProps}>
-        {
-          _options.map(item =>
-            <Option key={item.value} value={String(item.value)}>{item.label}</Option>
-          )
-        }
-      </Select>
-    )
-  }
-}
-
-SelectProjectStatus = connect(function(state) {
-  const { projstatus } = state.app
-  const options = projstatus ? projstatus.map(item => ({ value: item.id, label: item.name })) : []
-  return { options }
-})(SelectProjectStatus)
-
 function ProjectBasicInfoForm(props) {
 
   const [form] = Form.useForm();
@@ -424,6 +386,23 @@ function InvestmentDocsForm(props) {
 const ConnectedInvestmentDocsForm = connect()(InvestmentDocsForm);
 const FormInvestmentDocs = React.forwardRef((props, ref) => <ConnectedInvestmentDocsForm {...props} forwardedRef={ref} />);
 
+function PaymentDocsForm(props) {
+  const [form] = Form.useForm();
+  return (
+    <Form ref={props.forwardedRef} form={form} className="fa-form">
+      <FaUploadFormItem label="相关交割文件" name="jiaogewenjian" required />
+      <FaUploadFormItem label="交割确认函" name="jiaogequerenhan" required />
+      <FaUploadFormItem label="股东会决议" name="judonghuijueyi" required />
+      <FaUploadFormItem label="收款方的营业执照复印件" name="yingyezhizhaofuyinjian" required />
+      <FaUploadFormItem label="付款通知书或缴款通知书" name="tongzhishu" required />
+      <FaUploadFormItem label="银行要求的其他文件" name="qitawenjian" />
+      <FaUploadFormItem label="首款证明" name="shoukuanzhengming" />
+    </Form>
+  );
+}
+const ConnectedPaymentDocsForm = connect()(PaymentDocsForm);
+const FormPaymentDocs = React.forwardRef((props, ref) => <ConnectedPaymentDocsForm {...props} forwardedRef={ref} />);
+
 export {
   FormProjectBasicInfo,
   FormProjectBasicInfoDocs,
@@ -434,4 +413,5 @@ export {
   FormCommunicationMeeting,
   FormDecisionMeeting,
   FormInvestmentDocs,
+  FormPaymentDocs,
 };
