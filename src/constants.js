@@ -50,7 +50,7 @@ export const KEY_TO_URI = {
   "organization_bd": "/app", // todo?
   // "email_management": URI_4,
   // "timeline_management": URI_5,
-  "Full_usermanager": URI_6,
+  // "Full_usermanager": URI_6,
   "project_dataroom": URI_7,
   "company_dataroom": "/app/dataroom/company/list",
   "reminder": URI_8,
@@ -73,8 +73,8 @@ export const KEY_TO_URI = {
   // "OKR": "/app/okr/list",
   // "onlineTest": "/app/online-test",
   // "orgBD_report": "/app/project-report",
-  "HR": "/app/hr",
-  "Resigned_usermanager": "/app/user/list/resigned-trader",
+  // "HR": "/app/hr",
+  // "Resigned_usermanager": "/app/user/list/resigned-trader",
   "user_profile": "/app/personal-center",
   "feishu_work": "/app/feishu/approval",
 }
