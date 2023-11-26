@@ -399,30 +399,30 @@ class ProjectList extends React.Component {
     };
     const imgStyle={width:'15px',height:'20px'}
     const columns = [
-      {
-        key: 'image',
-        render: (text, record) => {
-          const industry = record.industries && record.industries[0]
-          const imgUrl = industry ? industry.url : 'defaultUrl'
-          const dataroom = this.props.projectIDToDataroom[record.id];
-          return hasPerm('usersys.as_trader') ? (
-            <div>
-              {dataroom ? (
-                <Tooltip title="DataRoom">
-                  <Link to={`/app/dataroom/detail?id=${dataroom.id}&isClose=${dataroom.isClose}&projectID=${record.id}&projectTitle=${encodeURIComponent(record.realname)}`}>
-                    <Button className={this.checkExpiredProject(record)} type="link" icon={<FolderOutlined />} />
-                  </Link>
-                </Tooltip>
-              ) : (
-                <Button type="link" icon={<FolderOutlined />} disabled />
-              )}
-              <Tooltip title="机构看板"><Link to={`/app/org/bd?projId=${record.id}`}><Button className={this.checkExpiredProject(record)} type="link" icon={<LineChartOutlined />} /></Link></Tooltip>
-              <Tooltip title="成本中心"><Link to={`/app/projects/cost/${record.id}?name=${record.realname}&projId=${record.id}`}><Button className={this.checkExpiredProject(record)} type="link" icon={<DollarOutlined />} /></Link></Tooltip>
-              <Tooltip title="名单生成"><Link to={`/app/orgbd/add?projId=${record.id}`}><Button className={this.checkExpiredProject(record)} type="link" icon={<DatabaseOutlined />} /></Link></Tooltip>
-            </div>
-          ) : <img src={imgUrl} style={{ width: '80px', height: '50px' }} />;
-        }
-      },
+      // {
+      //   key: 'image',
+      //   render: (text, record) => {
+      //     const industry = record.industries && record.industries[0]
+      //     const imgUrl = industry ? industry.url : 'defaultUrl'
+      //     const dataroom = this.props.projectIDToDataroom[record.id];
+      //     return hasPerm('usersys.as_trader') ? (
+      //       <div>
+      //         {dataroom ? (
+      //           <Tooltip title="DataRoom">
+      //             <Link to={`/app/dataroom/detail?id=${dataroom.id}&isClose=${dataroom.isClose}&projectID=${record.id}&projectTitle=${encodeURIComponent(record.realname)}`}>
+      //               <Button className={this.checkExpiredProject(record)} type="link" icon={<FolderOutlined />} />
+      //             </Link>
+      //           </Tooltip>
+      //         ) : (
+      //           <Button type="link" icon={<FolderOutlined />} disabled />
+      //         )}
+      //         <Tooltip title="机构看板"><Link to={`/app/org/bd?projId=${record.id}`}><Button className={this.checkExpiredProject(record)} type="link" icon={<LineChartOutlined />} /></Link></Tooltip>
+      //         <Tooltip title="成本中心"><Link to={`/app/projects/cost/${record.id}?name=${record.realname}&projId=${record.id}`}><Button className={this.checkExpiredProject(record)} type="link" icon={<DollarOutlined />} /></Link></Tooltip>
+      //         <Tooltip title="名单生成"><Link to={`/app/orgbd/add?projId=${record.id}`}><Button className={this.checkExpiredProject(record)} type="link" icon={<DatabaseOutlined />} /></Link></Tooltip>
+      //       </div>
+      //     ) : <img src={imgUrl} style={{ width: '80px', height: '50px' }} />;
+      //   }
+      // },
       {
         title: i18n('project.name'),
         key: 'title',
