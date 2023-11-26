@@ -101,7 +101,7 @@ function Dashboard(props) {
         projstatus: ongoingStatus.map(m => m.id),
         sort: 'publishDate',
         desc: 1,
-        user: userInfo && userInfo.id, // dashboard 应该显示当前用户参与的项目，无论他是否有平台项目管理权限
+        user: userInfo && userInfo.id, // dashboard 应该显示当前用户参与的项目，无论他是否有投前项目管理权限
         iscomproj: 0,
       }
       const reqProj = await requestAllData2(api.getProj, params, 10);

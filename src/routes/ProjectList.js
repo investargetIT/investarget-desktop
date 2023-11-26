@@ -539,7 +539,7 @@ class ProjectList extends React.Component {
             {hasPerm('usersys.as_trader') ? <Link to="/app">首页</Link> : '首页'}
           </Breadcrumb.Item>
           <Breadcrumb.Item>项目管理</Breadcrumb.Item>
-          <Breadcrumb.Item>平台项目</Breadcrumb.Item>
+          <Breadcrumb.Item>投前项目</Breadcrumb.Item>
         </Breadcrumb>
 
         {/* <ProjectListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} /> */}

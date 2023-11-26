@@ -8,7 +8,7 @@
     "meeting_bd": "会议BD",
     "meeting_management": "会议管理",
     "project_management": "项目管理",
-    "platform_projects": "平台项目",
+    "platform_projects": "投前项目",
     "interest_projects": "感兴趣项目",
     "collect_projects": "收藏项目",
     "publish_projects": "已发布项目",
@@ -202,7 +202,7 @@
   },
   "project": {
     "industry_group": "所属行业组",
-    "platform_projects": "平台项目列表",
+    "platform_projects": "投前项目列表",
     "upload_project": "发布项目",
     "upload_marketplace": "发布 Market Place",
     "edit_project": "修改项目",

@@ -159,7 +159,7 @@ class RecommendProject extends React.Component {
           </Breadcrumb.Item>
           <Breadcrumb.Item>项目管理</Breadcrumb.Item>
           <Breadcrumb.Item>
-            <Link to="/app/projects/list">平台项目</Link>
+            <Link to="/app/projects/list">投前项目</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
             <Link to={`/app/projects/${this.state.projId}`}>项目详情</Link>
