@@ -2,7 +2,7 @@
   "menu": {
     "project_library": "项目全库",
     "organization_management": "机构管理",
-    "bd_management": "BD管理",
+    "bd_management": "投后管理",
     "project_bd": "线索项目",
     "organization_bd": "已投项目",
     "meeting_bd": "会议BD",

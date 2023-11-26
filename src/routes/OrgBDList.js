@@ -46,7 +46,7 @@ export default class OrgBDList extends React.Component {
           <Breadcrumb.Item>
             <Link to="/app">首页</Link>
           </Breadcrumb.Item>
-          <Breadcrumb.Item>BD管理</Breadcrumb.Item>
+          <Breadcrumb.Item>投后管理</Breadcrumb.Item>
           <Breadcrumb.Item>
             <Link to="/app/orgbd/project/list">机构BD</Link>
           </Breadcrumb.Item>
@@ -55,7 +55,7 @@ export default class OrgBDList extends React.Component {
 
         <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }} className="only-on-mobile">
           <Breadcrumb.Item>首页</Breadcrumb.Item>
-          <Breadcrumb.Item>BD管理</Breadcrumb.Item>
+          <Breadcrumb.Item>投后管理</Breadcrumb.Item>
           <Breadcrumb.Item>机构BD</Breadcrumb.Item>
           <Breadcrumb.Item>机构看板</Breadcrumb.Item>
         </Breadcrumb>
