@@ -9,8 +9,9 @@ import {
 } from '../utils/util';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import OrgBDListComponent from '../components/OrgBDListComponent';
-import { Button, Breadcrumb } from 'antd';
+import { Button, Breadcrumb, Card } from 'antd';
 import { Link } from 'dva/router';
+import { FormAgreementInfo } from '../components/FormPreInvest';
 
 export default class OrgBDList extends React.Component {
   
@@ -48,19 +49,19 @@ export default class OrgBDList extends React.Component {
           </Breadcrumb.Item>
           <Breadcrumb.Item>投后管理</Breadcrumb.Item>
           <Breadcrumb.Item>
-            <Link to="/app/orgbd/project/list">机构BD</Link>
+            <Link to="/app/orgbd/project/list">已投项目</Link>
           </Breadcrumb.Item>
-          <Breadcrumb.Item>机构看板</Breadcrumb.Item>
+          {/* <Breadcrumb.Item>机构看板</Breadcrumb.Item> */}
         </Breadcrumb>
 
         <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }} className="only-on-mobile">
           <Breadcrumb.Item>首页</Breadcrumb.Item>
           <Breadcrumb.Item>投后管理</Breadcrumb.Item>
-          <Breadcrumb.Item>机构BD</Breadcrumb.Item>
-          <Breadcrumb.Item>机构看板</Breadcrumb.Item>
+          <Breadcrumb.Item>已投项目</Breadcrumb.Item>
+          {/* <Breadcrumb.Item>机构看板</Breadcrumb.Item> */}
         </Breadcrumb>
 
-        {this.state.displayContent &&
+        {/* {this.state.displayContent &&
           <OrgBDListComponent
             editable
             location={this.props.location}
@@ -70,7 +71,11 @@ export default class OrgBDList extends React.Component {
             onProjChange={this.handleProjChange}
             onProjExistChange={isProj => this.setState({ isProj })}
           />
-        }
+        } */}
+        <Card title="协议信息" style={{ marginBottom: 20 }}>
+          <div style={{ marginBottom: 20, color: '#339bd2' }}>投资协议</div>
+          <FormAgreementInfo />
+        </Card>
       </LeftRightLayoutPure>)
   }
 

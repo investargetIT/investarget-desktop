@@ -854,13 +854,13 @@ a.expired-project, button.expired-project, button.expired-project:hover {
   color: #616161;
   margin-bottom: 0 !important;
 }
-.fa-form-item .ant-input, .fa-form-item .ant-picker {
+.fa-form-item .ant-input, .fa-form-item .ant-picker, .fa-form-item .ant-input-number {
   border: none;
 }
 .fa-form-item.ant-form-item .ant-form-item-explain {
   display: none;
 }
-.fa-form-item.ant-form-item-has-error .ant-picker, .fa-form-item.ant-form-item-has-error .ant-input {
+.fa-form-item.ant-form-item-has-error .ant-picker, .fa-form-item.ant-form-item-has-error .ant-input, .fa-form-item.ant-form-item-has-error .ant-input-number {
   border: 1px solid #f2726f;
 }
 .fa-form-item .ant-select:not(.ant-select-customize-input) .ant-select-selector {

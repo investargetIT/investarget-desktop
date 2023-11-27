@@ -39,6 +39,7 @@ import {
   SelectIndustryGroup,
   SelectExistProject,
   SelectProjectBD,
+  SelectInvestmentRound,
 } from '../components/ExtraInput'
 import { EditOutlined, DeleteOutlined , CloudUploadOutlined, LoadingOutlined } from '@ant-design/icons';
 
@@ -403,6 +404,119 @@ function PaymentDocsForm(props) {
 const ConnectedPaymentDocsForm = connect()(PaymentDocsForm);
 const FormPaymentDocs = React.forwardRef((props, ref) => <ConnectedPaymentDocsForm {...props} forwardedRef={ref} />);
 
+function AgreementInfoForm(props) {
+
+  const [form] = Form.useForm();
+
+  useEffect(() => {
+    const formValuesStr = localStorage.getItem('agreementInfoFormValues');
+    if (formValuesStr) {
+      const formValues = JSON.parse(formValuesStr);
+      const date = moment(formValues.date)
+      form.setFieldsValue({ ...formValues, date });
+    }
+    return () => {
+      form.validateFields()
+        .then(formValues => {
+          localStorage.setItem('agreementInfoFormValues', JSON.stringify(formValues));
+        });
+    };
+  }, []);
+
+  const layout = {
+    labelCol: {
+      xs: { span: 24 },
+      sm: { span: 12 },
+    },
+    wrapperCol: {
+      xs: { span: 24 },
+      sm: { span: 12 },
+    },
+  }
+
+  return (
+    <Form ref={props.forwardedRef} form={form} className="fa-form">
+      <div style={{ display: 'flex' }}>
+        <div style={{ flex: 1 }}>
+          <FaBasicFormItem layout={layout} label="被投企业" name="lawoffice" required>
+            <Input />
+          </FaBasicFormItem>
+        </div>
+
+        <div style={{ flex: 1 }}>
+          <FaBasicFormItem layout={layout} label="签署日期" name="date" valueType="object" required>
+            <DatePicker style={{ width: '100%' }} />
+          </FaBasicFormItem>
+        </div>
+      </div>
+
+      <div style={{ display: 'flex' }}>
+        <div style={{ flex: 1 }}>
+          <FaBasicFormItem layout={layout} label="领投/跟投" name="accountoffice" required>
+            <Input />
+          </FaBasicFormItem>
+        </div>
+
+        <div style={{ flex: 1 }}>
+          <FaBasicFormItem layout={layout} label="融资轮次" name="accountant" valueType="number" required>
+            <SelectInvestmentRound />
+          </FaBasicFormItem>
+        </div>
+      </div>
+
+      <div style={{ display: 'flex' }}>
+        <div style={{ flex: 1 }}>
+          <FaBasicFormItem layout={layout} label="融资金额" name="provider" valueType="number" required>
+            <InputNumber style={{ width: '100%' }} formatter={value => value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} />
+          </FaBasicFormItem>
+        </div>
+
+        <div style={{ flex: 1 }}>
+          <FaBasicFormItem layout={layout} label="协议币种" name="vendorPeople" valueType="number" required>
+            <SelectCurrencyType />
+          </FaBasicFormItem>
+        </div>
+      </div>
+
+      <div style={{ display: 'flex' }}>
+        <div style={{ flex: 1 }}>
+          <FaBasicFormItem layout={layout} label="交易前总股数/注册资本" name="jiaoyiqianzonggushu" valueType="number" required>
+            <InputNumber style={{ width: '100%' }} formatter={value => value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} />
+          </FaBasicFormItem>
+        </div>
+
+        <div style={{ flex: 1 }}>
+          <FaBasicFormItem layout={layout} label="交易后总股数/注册资本" name="jiaoyihouzonggushu" valueType="number" required>
+            <InputNumber style={{ width: '100%' }} formatter={value => value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} />
+          </FaBasicFormItem>
+        </div>
+      </div>
+
+      <div style={{ display: 'flex' }}>
+        <div style={{ flex: 1 }}>
+          <FaBasicFormItem layout={layout} label="投后估值" name="touhouguzhi" valueType="number" required>
+            <InputNumber style={{ width: '100%' }} formatter={value => value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} />
+          </FaBasicFormItem>
+        </div>
+
+        <div style={{ flex: 1 }}>
+          <FaBasicFormItem layout={layout} label="我司持股比例" name="wosichigubili" valueType="number" required>
+            <InputNumber style={{ width: '100%' }} formatter={value => value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} />
+          </FaBasicFormItem>
+        </div>
+      </div>
+
+      <FaBasicFormItem label="备注" name="remark">
+        <Input />
+      </FaBasicFormItem>
+
+    </Form>
+  );
+}
+
+const ConnectedAgreementInfoForm = connect()(AgreementInfoForm);
+const FormAgreementInfo = React.forwardRef((props, ref) => <ConnectedAgreementInfoForm {...props} forwardedRef={ref} />);
+
 export {
   FormProjectBasicInfo,
   FormProjectBasicInfoDocs,
@@ -414,4 +528,5 @@ export {
   FormDecisionMeeting,
   FormInvestmentDocs,
   FormPaymentDocs,
+  FormAgreementInfo,
 };

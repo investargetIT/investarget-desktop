@@ -1476,6 +1476,15 @@ const seasons = [
 ];
 const SelectSeason = withOptions(SelectNumber, seasons);
 
+const SelectInvestmentRound = withOptions(SelectNumber, [
+  { label: '种子轮', value: 1 },
+  { label: '天使轮', value: 2 },
+  { label: 'A轮', value: 3 },
+  { label: 'B轮', value: 4 },
+  { label: 'C轮', value: 5 },
+  { label: 'D轮', value: 6 },
+]);
+
 /**
  * SelectArea
  */
@@ -2863,6 +2872,7 @@ export {
   SelectScheduleType,
   SelectOrAddDate,
   SelectSeason,
+  SelectInvestmentRound,
   CascaderCountry,
   CascaderChina,
   CascaderIndustry,
