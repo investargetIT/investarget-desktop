@@ -228,6 +228,14 @@ function mapStateToProps(state) {
     }
     return true;
   });
+
+  const projectBDIndex = newMenuList.map(m => m.namekey).indexOf('project_bd');
+  const projectBDMenu = newMenuList[projectBDIndex];
+  projectBDMenu.parentmenu = 1;
+  newMenuList.splice(projectBDIndex, 1);
+  const projectListIndex = newMenuList.map(m => m.namekey).indexOf('platform_projects');
+  newMenuList.splice(projectListIndex, 0, projectBDMenu);
+  
   return {
     selectedKeys,
     openKeys,
