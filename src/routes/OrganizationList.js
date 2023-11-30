@@ -22,6 +22,7 @@ import {
 import { OrganizationListFilterNew, ç } from '../components/Filter'
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import styles from './ProjectBDList.css';
+import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 
 const Option = Select.Option
 const RadioGroup = Radio.Group;
@@ -34,7 +35,7 @@ class OrganizationList extends React.Component {
     super(props)
 
     const setting = this.readSetting()
-    const filters = setting ? setting.filters : OrganizationListFilterNew.defaultValue
+    const filters = OrganizationListFilterNew.defaultValue
     const search = setting ? setting.search : null
     const page = setting ? setting.page : 1
     const pageSize = setting ? setting.pageSize: null;
@@ -340,6 +341,7 @@ class OrganizationList extends React.Component {
     const buttonStyle={textDecoration:'underline',border:'none',background:'none'}
     const imgStyle={width:'15px',height:'20px'}
     const columns = [
+      { title: '#', key: 'no', render: (_, record, index) => index + 1 },
       { title: '全称', key: 'orgname',  
         render: (text, record) => <Link to={'/app/organization/' + record.id}>
           <div style={{ color: "#428BCA" }} onMouseEnter={() => this.handleMouseEnterOrgName(record)}>
@@ -348,15 +350,15 @@ class OrganizationList extends React.Component {
         </Link>,
       //sorter:true, 
       },
-      // { title: i18n('organization.industry'), key: 'industry', dataIndex: ['industry', 'industry'], sorter: this.state.searchOption === 0 ? true : false, },
+      { title: i18n('organization.industry'), key: 'industry', dataIndex: ['industry', 'industry'] },
       // 隐藏机构货币类型
-      // { title: i18n('organization.currency'), key: 'currency', dataIndex: ['currency', 'currency'], sorter: this.state.searchOption === 0 ? true : false, },
-      // { title: i18n('organization.decision_cycle'), key: 'decisionCycle', dataIndex: 'decisionCycle', sorter: this.state.searchOption === 0 ? true : false, },
+      { title: i18n('organization.currency'), key: 'currency', dataIndex: ['currency', 'currency'] },
+      { title: i18n('organization.decision_cycle'), key: 'decisionCycle', dataIndex: 'decisionCycle' },
       { title: i18n('organization.transaction_phase'), key: 'orgtransactionphase', dataIndex: 'orgtransactionphase', render: (text, record) => {
         let phases = record.orgtransactionphase || []
         return <span className="span-phase">{phases.map(p => p.name).join(' / ')}</span>
-      }, sorter: this.state.searchOption === 0 ? true : false, },
-      // { title: i18n('organization.stock_code'), key: 'stockcode', dataIndex: 'stockcode', sorter: this.state.searchOption === 0 ? true : false, },
+      } },
+      { title: i18n('organization.stock_code'), key: 'stockcode', dataIndex: 'stockcode' },
       { title: i18n('common.operation'), key: 'action', align: 'center', render: (text, record) => (
           <span className="span-operation orgbd-operation-icon-btn">
 
@@ -391,156 +393,36 @@ class OrganizationList extends React.Component {
                     { name: i18n('organization.new_org'), link: "/app/organization/add" } : null
 
     return (
-      <LeftRightLayout location={this.props.location} title={i18n('menu.organization_management')} action={action}>
+      <LeftRightLayoutPure location={this.props.location} title={i18n('menu.organization_management')} action={action}>
 
-        <div>
+        <div style={{ backgroundColor: 'white', padding: 16 }}>
 
-          <div style={{ display: 'flex', marginBottom: 24, justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', marginBottom: 16, justifyContent: 'space-between' }}>
             <div style={{ flex: 1 }}>
+              <OrganizationListFilterNew onSearch={this.handleFilt} />
               <Input.Search
-                style={{ width: 450, marginRight: 8 }}
-                placeholder="搜索内容"
-                size="large"
-                addonBefore={selectBefore}
+                style={{ width: 250, marginLeft: 8 }}
+                placeholder="按投资人名称查询"
                 value={search}
                 onChange={e => this.setState({ search: e.target.value })}
                 onSearch={this.handleOrgSearch}
               />
-              <OrganizationListFilterNew onSearch={this.handleFilt} />
             </div>
-            
-            {this.state.searchOption === 0 &&
-              <div style={{ width: 200, textAlign: 'right', alignSelf: 'flex-end' }}>
-                {i18n('common.sort_by_created_time')}
-                <Select size="large" style={{ marginLeft: 8 }} defaultValue="desc" onChange={this.handleSortChange}>
-                  <Option value="asc">{i18n('common.asc_order')}</Option>
-                  <Option value="desc">{i18n('common.dec_order')}</Option>
-                </Select>
-              </div>
-            }
+            <Link to="/app/organization/add"><Button type="primary">新建</Button></Link>
           </div>
 
-          <Row>
-            <Col span={10}>
-              <Table
-                rowClassName={record => {
-                  return record.id === this.state.currentOrg ? styles['current-row'] : '';
-                }}
-                onChange={this.handleTableChange}
-                columns={columns}
-                dataSource={list}
-                rowKey={record => record.id}
-                loading={loading}
-                pagination={false}
-                rowSelection={{ onChange: this.handleRowSelectionChange, selectedRowKeys: this.state.selectedIds }}
-              />
-            </Col>
+          <Table
+            // bordered
+            style={{ border: '1px solid #f0f0f0', borderBottomWidth: 0 }}
+            onChange={this.handleTableChange}
+            columns={columns}
+            dataSource={list}
+            rowKey={record => record.id}
+            loading={loading}
+            pagination={false}
+          />
 
-            <Col span={6} style={{ minHeight: 500 }}>
-              <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column', position: 'absolute', borderBottom: '1px solid #f0f0f0', justifyContent: 'space-between' }}>
-                <Affix offsetTop={50} onChange={affixed => this.setState({ affixed })}>
-                  <div>
-                    <div style={{ height: 60, padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div style={{ height: '100%' }}>
-                        <div style={{ lineHeight: '27px', fontWeight: 500 }}>备注</div>
-                        <div style={{ fontSize: 10, color: 'gray' }}>{this.getCurrentOrgName()}</div>
-                      </div>
-                      <Link to={`/app/organization/${this.getCurrentOrgId()}?action=addRemark`} target="_blank">
-                        <Tooltip title="添加备注"><PlusOutlined /></Tooltip>
-                      </Link>
-                    </div>
-                    <div style={{ padding: 16, overflowY: 'auto', height: this.calculateContentHeight() }}>
-                      <List
-                        className="comment-list"
-                        itemLayout="horizontal"
-                        dataSource={this.getCurrentOrgRemarks()}
-                        renderItem={item => (
-                          <li>
-                            <Comment
-                              // actions={item.actions}
-                              author={item.createuserobj && item.createuserobj.username}
-                              avatar={item.createuserobj && <Link to={`/app/user/${item.createuser}`}><Avatar src={item.createuserobj.photourl} /></Link>}
-                              content={<p dangerouslySetInnerHTML={{ __html: item.remark }} />}
-                              datetime={time(item.createdtime)}
-                            />
-                          </li>
-                        )}
-                      />
-                    </div>
-                  </div>
-                </Affix>
-              </div>
-            </Col>
-
-            <Col span={8}>
-              <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column', position: 'absolute', borderBottom: '1px solid #f0f0f0' }}>
-                <Affix offsetTop={50}>
-                  <div>
-                    <div style={{ height: 60, padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div style={{ height: '100%' }}>
-                        <div style={{ lineHeight: '27px', fontWeight: 500 }}>投资人</div>
-                        <div style={{ fontSize: 10, color: 'gray' }}>{this.getCurrentOrgName()}</div>
-                      </div>
-                      <Link to={`/app/user/add?org=${this.getCurrentOrgId()}&orgName=${this.getCurrentOrgName()}&redirect=/app/organization/list`} target="_blank">
-                        <Tooltip title="添加投资人"><PlusOutlined /></Tooltip>
-                      </Link>
-                    </div>
-                    <div style={{ padding: 16, overflowY: 'auto', borderLeft: '1px solid #f0f0f0', height: this.calculateContentHeight() }}>
-                      <List
-                        itemLayout="horizontal"
-                        dataSource={this.getCurrentOrgInvestors()}
-                        renderItem={item => (
-                          <List.Item>
-                            <List.Item.Meta
-                              avatar={<Avatar src={item.photourl} />}
-                              title={
-                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0 8px', color: 'rgba(0, 0, 0, .45)', lineHeight: 2, fontWeight: 'normal' }}>
-                                  <div><Link to={`/app/user/${item.id}`}>{item.username}</Link></div>
-                                  <div>{item.mobile}</div>
-                                  <Link target="_blank" to={`/app/user/edit/${item.id}`}><EditOutlined /></Link>
-                                  <div>{item.tags && item.tags.map(m => <Tag key={m} style={{ color: 'rgba(0, 0, 0, .45)' }}>{this.getTagNameByID(m)}</Tag>)}</div>
-                                </div>
-                              }
-                              description={item.remarks && item.remarks.map(remark => (
-                                <Comment
-                                  key={remark.id}
-                                  author={remark.createuser && remark.createuser.username}
-                                  avatar={remark.createuser && <Link to={`/app/user/${remark.createuser.id}`}><Avatar size="small" src={remark.createuser.photourl} /></Link>}
-                                  content={remark.remark}
-                                  datetime={time(remark.createdtime)}
-                                />
-                              ))}
-                            />
-                          </List.Item>
-                        )}
-                      />
-                    </div>
-                  </div>
-                </Affix>
-              </div>
-            </Col>
-
-          </Row>
-         
-          <Affix offsetBottom={0} onChange={affixed => this.setState({ footerAffixed: affixed })}>
-            <div />
-          </Affix>
-
-          <div ref={this.footerContainerRef} style={{ marginTop: 24, display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-            <div style={{ fontSize: 13, marginBottom: 24 }}>
-              <Button
-                disabled={this.state.selectedIds.length == 0}
-                style={{ backgroundColor: 'orange', border: 'none' }}
-                type="primary"
-                size="large"
-                loading={this.state.isLoadingExportData}
-                onClick={this.handleExportBtnClicked}>
-                {i18n('project_library.export_excel')}
-              </Button>
-              <img style={{ marginLeft: 10, width: 10 }} src="/images/certificate.svg" />表示Top机构，
-              <UserOutlined />表示该机构下有联系方式的投资人数量
-            </div>
-
+          <div ref={this.footerContainerRef} style={{ marginTop: 24, display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
             <Pagination
               style={paginationStyle}
               total={total}
@@ -558,7 +440,7 @@ class OrganizationList extends React.Component {
 
         <iframe style={{ display: 'none' }} src={this.state.downloadUrl}></iframe>
 
-      </LeftRightLayout>
+      </LeftRightLayoutPure>
     )
 
   }
