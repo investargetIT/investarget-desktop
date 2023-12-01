@@ -15,6 +15,7 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
 } from '@ant-design/icons';
+import _ from 'lodash';
 
 const { SubMenu } = Menu
 const { Sider } = Layout
@@ -230,11 +231,25 @@ function mapStateToProps(state) {
   });
 
   const projectBDIndex = newMenuList.map(m => m.namekey).indexOf('project_bd');
-  const projectBDMenu = newMenuList[projectBDIndex];
-  projectBDMenu.parentmenu = 1;
-  newMenuList.splice(projectBDIndex, 1);
-  const projectListIndex = newMenuList.map(m => m.namekey).indexOf('platform_projects');
-  newMenuList.splice(projectListIndex, 0, projectBDMenu);
+  if (projectBDIndex > -1) {
+    const projectBDMenu = newMenuList[projectBDIndex];
+    projectBDMenu.parentmenu = 1;
+    newMenuList.splice(projectBDIndex, 1);
+
+    const projectListIndex = newMenuList.map(m => m.namekey).indexOf('platform_projects');
+    if (projectListIndex > -1) {
+      newMenuList.splice(projectListIndex, 0, projectBDMenu);
+    }
+  }
+  
+  const orgListIndex = newMenuList.map(m => m.namekey).indexOf('organization_management');
+  if (orgListIndex > -1) {
+    const fundMenu = _.cloneDeep(newMenuList[orgListIndex]);
+    fundMenu.id = 99;
+    fundMenu.namekey = 'fund_management';
+    fundMenu.parentmenu = null;
+    newMenuList.splice(orgListIndex + 1, 0, fundMenu);
+  }
   
   return {
     selectedKeys,

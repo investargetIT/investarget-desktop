@@ -19,6 +19,7 @@ import {
   SettingOutlined,
   SolutionOutlined,
   CheckCircleOutlined,
+  FundOutlined,
 } from '@ant-design/icons';
 
 export const PAGE_SIZE = 5
@@ -77,6 +78,7 @@ export const KEY_TO_URI = {
   // "Resigned_usermanager": "/app/user/list/resigned-trader",
   "user_profile": "/app/personal-center",
   "feishu_work": "/app/feishu/approval",
+  "fund_management": URI_3,
 }
 
 export const URI_TO_KEY = {
@@ -199,6 +201,7 @@ export const KEY_TO_ICON = {
   'onlineTest': <EditOutlined />,
   "HR": <SolutionOutlined />,
   'feishu_work': <CheckCircleOutlined />,
+  'fund_management': <FundOutlined />,
 }
 
 export const PAGE_SIZE_OPTIONS = ['10', '50', '100'];

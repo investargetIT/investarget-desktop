@@ -43,7 +43,8 @@
     "Resigned_usermanager": "离职交易师用户管理",
     "Full_usermanager": "全库用户管理",
     "user_profile": "个人中心",
-    "feishu_work": "行政审批"
+    "feishu_work": "行政审批",
+    "fund_management": "基金管理"
   },
   "account": {
     "login": "登录",
