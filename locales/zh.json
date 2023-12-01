@@ -364,7 +364,7 @@
 
   "organization": {
     "org_list": "机构列表",
-    "new_org": "新增机构",
+    "new_org": "新增投资人",
     "edit_org": "修改机构",
     "org_detail": "机构详情",
     "investor_list": "投资人名单",
@@ -373,7 +373,7 @@
     "orgname": "机构名",
     "cn_name": "中文名称",
     "en_name": "英文名称",
-    "org_type": "机构类型",
+    "org_type": "类型",
     "currency": "货币类型",
     "industry": "行业",
     "decision_cycle": "决策周期（天）",

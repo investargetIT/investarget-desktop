@@ -612,7 +612,7 @@ class OrganizationListFilterNew extends React.Component {
         allowClear
         mode="single"
         style={{ width: 250 }}
-        placeholder="请选择机构类型"
+        placeholder="投资人类型"
         value={orgtypes}
         onChange={this.handleChange.bind(this, 'orgtypes')}
       />

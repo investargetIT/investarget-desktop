@@ -345,7 +345,7 @@ class OrganizationList extends React.Component {
       { title: "最新进展", key: 'latest', render: () => <span style={{ color: 'lightgrey' }}>暂无数据</span> },
       { title: '跟进基金', key: 'followup' },
       { title: '已投基金', key: 'alreadyin' },
-      { title: '入库时间', key: 'date', render: () => '2022-08-21' },
+      { title: '入库时间', key: 'date', width: 120, render: () => '2022-08-21' },
       { title: '投资人概况', key: 'summary' },
     ];
 
