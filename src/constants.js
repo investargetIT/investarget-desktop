@@ -78,7 +78,7 @@ export const KEY_TO_URI = {
   // "Resigned_usermanager": "/app/user/list/resigned-trader",
   "user_profile": "/app/personal-center",
   "feishu_work": "/app/feishu/approval",
-  "fund_management": URI_3,
+  "fund_management": "/app/fund/list",
 }
 
 export const URI_TO_KEY = {
@@ -108,6 +108,7 @@ export const URI_TO_KEY = {
   "/app/log/list": "log",
   "/app/hr": "HR",
   "/app/personal-center": "user_profile",
+  "/app/fund/list": "fund_management",
 }
 
 export const CONTENT_TYPE_ID_TO_PERM_GROUP = baseUrl === prodUrl ? 
