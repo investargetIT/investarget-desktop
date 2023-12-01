@@ -54,7 +54,7 @@ class OrganizationList extends React.Component {
       desc:undefined,
       selectedIds: [],
       downloadUrl: null,
-      searchOption,
+      searchOption: 0,
       currentOrg: null,
       affixed: false,
       footerAffixed: false,
@@ -215,7 +215,7 @@ class OrganizationList extends React.Component {
   }
 
   componentDidMount() {
-    this.props.dispatch({ type: 'app/getSource', payload: 'tag' });
+    this.props.dispatch({ type: 'app/getSourceList', payload: ['tag', 'orgtype'] });
     this.handleFilterOrg()
       .then(() => {
         const { scrollPosition, currentOrg } = this.props;
@@ -323,24 +323,30 @@ class OrganizationList extends React.Component {
     }
   }
 
+  getOrgType = id => {
+    if (!id || !this.props.orgtype) return null;
+    const orgType = this.props.orgtype.find(f => f.id === id);
+    return orgType.name;
+  }
+
   render() {
     const columns = [
       { title: '#', key: 'no', render: (_, record, index) => index + 1 },
       { title: '投资人名称', key: 'orgname',  
         render: (_, record) => <Link to={'/app/organization/' + record.id}>
-          <div style={{ color: "#428BCA" }} onMouseEnter={() => this.handleMouseEnterOrgName(record)}>
+          <div style={{ color: "#428BCA" }}>
             {record.orgfullname}
           </div>
         </Link>,
       },
-      { title: "投资人类型", key: 'type', dataIndex: 'orgtype' },
+      { title: "投资人类型", key: 'type', dataIndex: 'orgtype', render: id => id && <Tag>{this.getOrgType(id)}</Tag>  },
       { title: "投资人实体", key: 'orgfullname', dataIndex: 'orgfullname' },
       { title: "入库人", key: 'createuser', dataIndex: 'createuser', render: () => this.props.currentUser && this.props.currentUser.username },
       { title: "最新进展", key: 'latest', render: () => <span style={{ color: 'lightgrey' }}>暂无数据</span> },
-      { title: '跟进基金', key: 'stockcode', dataIndex: 'stockcode' },
-      { title: '已投基金', key: 'stockcode', dataIndex: 'stockcode' },
+      { title: '跟进基金', key: 'followup' },
+      { title: '已投基金', key: 'alreadyin' },
       { title: '入库时间', key: 'date', render: () => '2022-08-21' },
-      { title: '投资人概况', key: 'stockcode', dataIndex: 'stockcode' },
+      { title: '投资人概况', key: 'summary' },
     ];
 
     const { filters, search, total, list, loading, page, pageSize } = this.state
@@ -361,6 +367,7 @@ class OrganizationList extends React.Component {
                 value={search}
                 onChange={e => this.setState({ search: e.target.value })}
                 onSearch={this.handleOrgSearch}
+                allowClear
               />
             </div>
             <Link to="/app/organization/add"><Button type="primary">新建</Button></Link>
@@ -404,8 +411,8 @@ class OrganizationList extends React.Component {
 
 function mapStateToProps(state) {
   const { currentUser } = state;
-  const { orgListParameters: { scrollPosition, currentOrg }, tag, orgRemarks, orgInvestorsAndRemarks } = state.app;
-  return { scrollPosition, currentOrg, tag, orgRemarks, orgInvestorsAndRemarks, currentUser };
+  const { orgListParameters: { scrollPosition, currentOrg }, tag, orgRemarks, orgInvestorsAndRemarks, orgtype } = state.app;
+  return { scrollPosition, currentOrg, tag, orgRemarks, orgInvestorsAndRemarks, currentUser, orgtype };
 }
 
 export default connect(mapStateToProps)(OrganizationList);
