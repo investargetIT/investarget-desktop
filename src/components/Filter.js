@@ -590,6 +590,9 @@ class OrganizationListFilterNew extends React.Component {
   }
 
   handleChange = (key, value) => {
+    if (isNaN(value)) {
+      value = []
+    }
     this.setState({ [key]: value }, this.handleSearch);
   }
 
@@ -606,6 +609,7 @@ class OrganizationListFilterNew extends React.Component {
     const { investoverseasproject, currencys, orgtransactionphases, industrys, tags, orgtypes, area, orgstatus } = this.state
     return (
       <SelectOrganizationType
+        allowClear
         mode="single"
         style={{ width: 250 }}
         placeholder="请选择机构类型"

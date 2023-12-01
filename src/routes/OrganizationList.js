@@ -46,7 +46,7 @@ class OrganizationList extends React.Component {
       filters,
       search,
       page,
-      pageSize: (currentUser && currentUser.page) || 10,
+      pageSize: pageSize || (currentUser && currentUser.page) || 10,
       total: 0,
       list: [],
       loading: false,
