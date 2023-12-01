@@ -333,7 +333,7 @@ class FundList extends React.Component {
     const columns = [
       { title: '#', key: 'no', render: (_, record, index) => index + 1 },
       { title: '基金名称', key: 'orgname',  
-        render: (_, record) => <Link to={'/app/organization/' + record.id}>
+        render: (_, record) => <Link to={'/app/fund/' + record.id}>
           <div style={{ color: "#428BCA" }}>
             {record.orgfullname}
           </div>

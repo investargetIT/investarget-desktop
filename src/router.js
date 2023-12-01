@@ -96,6 +96,7 @@ import DashboardForMobile from './routes/DashboardForMobile';
 import SpeechToText from './routes/SpeechToText';
 import FeishuApprovalList from './routes/FeishuApprovalList';
 import FundList from './routes/FundList';
+import FundDetails from './routes/FundDetails';
 
 function RouterConfig({ history }) {
   return (
@@ -119,6 +120,7 @@ function RouterConfig({ history }) {
         <Route path="/app/org/bd" component={OrgBDList} />
         <Route path="/app/organization/list" component={OrganizationList} />
         <Route path="/app/fund/list" component={FundList} />
+        <Route path="/app/fund/:id" component={FundDetails} />
         <Route path="/app/org/export" component={OrgExportList} />
         <Route path="/app/projects/edit/:id" component={EditProject} />
         <Route path="/app/projects/list" component={ProjectList} />
