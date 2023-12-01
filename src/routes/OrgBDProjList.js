@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
 import { i18n, hasPerm, getCurrentUser, handleError } from '../utils/util'
-import { Input, Icon, Table, Button, Pagination, Popconfirm, Card, Row, Col, Modal } from 'antd'
+import { Input, Icon, Table, Button, Pagination, Popconfirm, Card, Row, Col, Modal, Spin } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import * as api from '../api'
 import { Search2 } from '../components/Search'
@@ -249,7 +249,7 @@ class OrgBDProjList extends React.Component {
               loading ? (
                 <div>
                   <div className="ant-spin ant-spin-spinning ant-table-without-pagination ant-table-spin-holder">
-                    <span className="ant-spin-dot"><i></i><i></i><i></i><i></i></span>
+                    <span className="ant-spin-dot"><Spin /></span>
                   </div>
                 </div>
               ) : null
