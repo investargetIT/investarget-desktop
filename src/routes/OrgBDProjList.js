@@ -272,15 +272,14 @@ class OrgBDProjList extends React.Component {
             </div>
           </div>
 
-          {/* {hasPerm('BD.manageOrgBD') && */}
-            <Pagination
-              style={{ marginTop: 50, marginBottom: 20, textAlign: 'center' }}
-              total={total}
-              current={page}
-              pageSize={pageSize}
-              onChange={this.handlePageChange}
-            />
-          {/* } */}
+          <Pagination
+            style={{ marginTop: 50, marginBottom: 20, textAlign: 'center' }}
+            total={total}
+            current={page}
+            pageSize={pageSize}
+            onChange={this.handlePageChange}
+            showSizeChanger={false}
+          />
 
         </div>
       </LeftRightLayout>
