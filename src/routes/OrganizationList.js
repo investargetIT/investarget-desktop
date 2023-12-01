@@ -107,43 +107,29 @@ class OrganizationList extends React.Component {
     const params = { ...filters, search, page_index: page, page_size: pageSize, sort, desc, issub: false }
     this.setState({ loading: true })
     console.log(params)
-    return api.getOrg(params).then(result => {
-      const { count: total, data: list } = result.data
-      const newList = list.map(m => {
-        const { createuser } = m;
-        let hasOperationPermission = false;
-        if (createuser && getCurrentUser() === createuser.id) {
-          hasOperationPermission = true;
-        }
-        return { ...m, hasOperationPermission };
-      });
-      this.setState(
-        { total, list: newList, loading: false, currentOrg: list.length > 0 ? list[0].id : null },
-      );
-      if (list.length > 0) {
-        this.props.dispatch({
-          type: 'app/getOrgRemarks',
-          payload: {
-            orgIDArr: [list[0].id],
-            forceUpdate: false
+    return api.getOrg(params)
+      .then(result => {
+        const { count: total, data: list } = result.data
+        const newList = list.map(m => {
+          const { createuser } = m;
+          let hasOperationPermission = false;
+          if (createuser && getCurrentUser() === createuser.id) {
+            hasOperationPermission = true;
           }
+          return { ...m, hasOperationPermission };
         });
-        this.props.dispatch({
-          type: 'app/getOrgInvestorsAndRemarks',
-          payload: {
-            orgIDArr: [list[0].id],
-            forceUpdate: false
-          }
-        });
-      }
-      this.writeSetting();
-    }, error => {
-      this.setState({ loading: false })
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
+        this.setState(
+          { total, list: newList, loading: false, currentOrg: list.length > 0 ? list[0].id : null },
+        );
+        this.writeSetting();
       })
-    })
+      .catch(error => {
+        this.setState({ loading: false })
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error
+        })
+      });
   }
 
   searchOrg = () => {
@@ -338,55 +324,24 @@ class OrganizationList extends React.Component {
   }
 
   render() {
-    const buttonStyle={textDecoration:'underline',border:'none',background:'none'}
-    const imgStyle={width:'15px',height:'20px'}
     const columns = [
       { title: '#', key: 'no', render: (_, record, index) => index + 1 },
-      { title: '全称', key: 'orgname',  
-        render: (text, record) => <Link to={'/app/organization/' + record.id}>
+      { title: '投资人名称', key: 'orgname',  
+        render: (_, record) => <Link to={'/app/organization/' + record.id}>
           <div style={{ color: "#428BCA" }} onMouseEnter={() => this.handleMouseEnterOrgName(record)}>
             {record.orgfullname}
           </div>
         </Link>,
-      //sorter:true, 
       },
-      { title: i18n('organization.industry'), key: 'industry', dataIndex: ['industry', 'industry'] },
-      // 隐藏机构货币类型
-      { title: i18n('organization.currency'), key: 'currency', dataIndex: ['currency', 'currency'] },
-      { title: i18n('organization.decision_cycle'), key: 'decisionCycle', dataIndex: 'decisionCycle' },
-      { title: i18n('organization.transaction_phase'), key: 'orgtransactionphase', dataIndex: 'orgtransactionphase', render: (text, record) => {
-        let phases = record.orgtransactionphase || []
-        return <span className="span-phase">{phases.map(p => p.name).join(' / ')}</span>
-      } },
-      { title: i18n('organization.stock_code'), key: 'stockcode', dataIndex: 'stockcode' },
-      { title: i18n('common.operation'), key: 'action', align: 'center', render: (text, record) => (
-          <span className="span-operation orgbd-operation-icon-btn">
-
-            <Link to={'/app/organization/edit/' + record.id}>
-              <Button onClick={this.handleEditBtnClicked} type="link" disabled={!hasPerm('org.admin_manageorg') && !record.hasOperationPermission}><EditOutlined /></Button>
-            </Link>
-
-            <Popconfirm title={i18n('delete_confirm')} disabled={!hasPerm('org.admin_manageorg') && !record.hasOperationPermission} onConfirm={this.deleteOrg.bind(null, record.id)}>
-              <Button type="link" disabled={!hasPerm('org.admin_manageorg') && !record.hasOperationPermission} >
-                <DeleteOutlined />
-              </Button>
-            </Popconfirm>
-          </span>
-        ),
-      },
-    ]
-
-    const selectBefore = (
-      <Select
-        defaultValue="0"
-        style={{ width: 200 }}
-        value={this.state.searchOption.toString()}
-        onChange={e => this.setState({ searchOption: parseInt(e, 10)})} 
-      >
-        <Option value="0">搜索机构名称/股票代码</Option>
-        <Option value="1">搜索备注以及附件内文字</Option>
-      </Select>
-    );
+      { title: "投资人类型", key: 'type', dataIndex: 'orgtype' },
+      { title: "投资人实体", key: 'orgfullname', dataIndex: 'orgfullname' },
+      { title: "入库人", key: 'createuser', dataIndex: 'createuser', render: () => this.props.currentUser && this.props.currentUser.username },
+      { title: "最新进展", key: 'latest', render: () => <span style={{ color: 'lightgrey' }}>暂无数据</span> },
+      { title: '跟进基金', key: 'stockcode', dataIndex: 'stockcode' },
+      { title: '已投基金', key: 'stockcode', dataIndex: 'stockcode' },
+      { title: '入库时间', key: 'date', render: () => '2022-08-21' },
+      { title: '投资人概况', key: 'stockcode', dataIndex: 'stockcode' },
+    ];
 
     const { filters, search, total, list, loading, page, pageSize } = this.state
     const action = hasPerm('usersys.as_trader') ?
@@ -448,8 +403,9 @@ class OrganizationList extends React.Component {
 }
 
 function mapStateToProps(state) {
+  const { currentUser } = state;
   const { orgListParameters: { scrollPosition, currentOrg }, tag, orgRemarks, orgInvestorsAndRemarks } = state.app;
-  return { scrollPosition, currentOrg, tag, orgRemarks, orgInvestorsAndRemarks };
+  return { scrollPosition, currentOrg, tag, orgRemarks, orgInvestorsAndRemarks, currentUser };
 }
 
 export default connect(mapStateToProps)(OrganizationList);
