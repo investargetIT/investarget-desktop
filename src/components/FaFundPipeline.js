@@ -11,6 +11,7 @@ import {
   FormDecisionMeeting,
   FormInvestmentDocs,
   FormPaymentDocs,
+  FormFundInfo,
 } from './FormFund';
 
 const { Step } = Steps;
@@ -40,14 +41,9 @@ function FaFundPipeline() {
         </div>
         <div style={{ flex: 1 }}>
           {current === 0 && (
-            <div>
-              <Card title="项目信息" style={{ marginBottom: 20 }}>
-                <FormProjectBasicInfo />
-              </Card>
-              <Card title="项目材料" style={{ marginBottom: 20 }}>
-                <FormProjectBasicInfoDocs />
-              </Card>
-            </div>
+            <Card title="基金信息" style={{ marginBottom: 20 }}>
+              <FormFundInfo />
+            </Card>
           )}
           {current === 1 && (
             <div>

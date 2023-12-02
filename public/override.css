@@ -830,12 +830,12 @@ a.expired-project, button.expired-project, button.expired-project:hover {
   border-bottom: 1px solid #d9d9d9;
 }
 .fa-form-item.ant-form-item > .ant-form-item-label {
-  background-color: #eee;
+  background-color: #fafafa;
   padding-left: 12px;
   border-right: 1px solid #d9d9d9;
 }
 .fa-upload-form-item.ant-form-item {
-  background-color: #eee;
+  background-color: #fafafa;
   padding-left: 12px;
 }
 .fa-upload-form-item.ant-form-item > .ant-form-item-label, .fa-form-item.ant-form-item > .ant-form-item-label {
@@ -845,10 +845,12 @@ a.expired-project, button.expired-project, button.expired-project:hover {
 .fa-form-item.ant-form-item > .ant-form-item-label > label {
   min-height: 36px;
   height: unset;
+  font-size: 14px;
 }
 .fa-upload-form-item.ant-form-item > .ant-form-item-label > label {
   min-height: 64px;
   height: unset;
+  font-size: 14px;
 }
 .fa-form-item.ant-form-item > .ant-form-item-label > label, .fa-upload-form-item.ant-form-item > .ant-form-item-label > label {
   color: #616161;

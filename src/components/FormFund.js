@@ -404,21 +404,20 @@ function PaymentDocsForm(props) {
 const ConnectedPaymentDocsForm = connect()(PaymentDocsForm);
 const FormPaymentDocs = React.forwardRef((props, ref) => <ConnectedPaymentDocsForm {...props} forwardedRef={ref} />);
 
-function AgreementInfoForm(props) {
+function FundInfoForm(props) {
 
   const [form] = Form.useForm();
 
   useEffect(() => {
-    const formValuesStr = localStorage.getItem('agreementInfoFormValues');
+    const formValuesStr = localStorage.getItem('FundInfoFormValues');
     if (formValuesStr) {
       const formValues = JSON.parse(formValuesStr);
-      const date = moment(formValues.date)
-      form.setFieldsValue({ ...formValues, date });
+      form.setFieldsValue({ ...formValues });
     }
     return () => {
       form.validateFields()
         .then(formValues => {
-          localStorage.setItem('agreementInfoFormValues', JSON.stringify(formValues));
+          localStorage.setItem('FundInfoFormValues', JSON.stringify(formValues));
         });
     };
   }, []);
@@ -438,27 +437,27 @@ function AgreementInfoForm(props) {
     <Form ref={props.forwardedRef} form={form} className="fa-form">
       <div style={{ display: 'flex' }}>
         <div style={{ flex: 1 }}>
-          <FaBasicFormItem layout={layout} label="被投企业" name="lawoffice" required>
+          <FaBasicFormItem layout={layout} label="基金名称" name="lawoffice" required>
             <Input />
           </FaBasicFormItem>
         </div>
 
         <div style={{ flex: 1 }}>
-          <FaBasicFormItem layout={layout} label="签署日期" name="date" valueType="object" required>
-            <DatePicker style={{ width: '100%' }} />
+          <FaBasicFormItem layout={layout} label="基金全称" name="fullname" required>
+            <Input />
           </FaBasicFormItem>
         </div>
       </div>
 
       <div style={{ display: 'flex' }}>
         <div style={{ flex: 1 }}>
-          <FaBasicFormItem layout={layout} label="领投/跟投" name="accountoffice" required>
+          <FaBasicFormItem layout={layout} label="组织形式" name="accountoffice" required>
             <Input />
           </FaBasicFormItem>
         </div>
 
         <div style={{ flex: 1 }}>
-          <FaBasicFormItem layout={layout} label="融资轮次" name="accountant" valueType="number" required>
+          <FaBasicFormItem layout={layout} label="注册地" name="accountant" valueType="number">
             <SelectInvestmentRound />
           </FaBasicFormItem>
         </div>
@@ -514,8 +513,8 @@ function AgreementInfoForm(props) {
   );
 }
 
-const ConnectedAgreementInfoForm = connect()(AgreementInfoForm);
-const FormAgreementInfo = React.forwardRef((props, ref) => <ConnectedAgreementInfoForm {...props} forwardedRef={ref} />);
+const ConnectedFundInfoForm = connect()(FundInfoForm);
+const FormFundInfo = React.forwardRef((props, ref) => <ConnectedFundInfoForm {...props} forwardedRef={ref} />);
 
 export {
   FormProjectBasicInfo,
@@ -528,5 +527,5 @@ export {
   FormDecisionMeeting,
   FormInvestmentDocs,
   FormPaymentDocs,
-  FormAgreementInfo,
+  FormFundInfo,
 };
