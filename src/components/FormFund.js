@@ -458,34 +458,20 @@ function FundInfoForm(props) {
 
         <div style={{ flex: 1 }}>
           <FaBasicFormItem layout={layout} label="注册地" name="accountant" valueType="number">
-            <SelectInvestmentRound />
+            <CascaderCountry isShowProvince />
           </FaBasicFormItem>
         </div>
       </div>
 
       <div style={{ display: 'flex' }}>
         <div style={{ flex: 1 }}>
-          <FaBasicFormItem layout={layout} label="融资金额" name="provider" valueType="number" required>
-            <InputNumber style={{ width: '100%' }} formatter={value => value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} />
-          </FaBasicFormItem>
-        </div>
-
-        <div style={{ flex: 1 }}>
-          <FaBasicFormItem layout={layout} label="协议币种" name="vendorPeople" valueType="number" required>
+          <FaBasicFormItem layout={layout} label="基金币种" name="provider" valueType="number">
             <SelectCurrencyType />
           </FaBasicFormItem>
         </div>
-      </div>
-
-      <div style={{ display: 'flex' }}>
-        <div style={{ flex: 1 }}>
-          <FaBasicFormItem layout={layout} label="交易前总股数/注册资本" name="jiaoyiqianzonggushu" valueType="number" required>
-            <InputNumber style={{ width: '100%' }} formatter={value => value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} />
-          </FaBasicFormItem>
-        </div>
 
         <div style={{ flex: 1 }}>
-          <FaBasicFormItem layout={layout} label="交易后总股数/注册资本" name="jiaoyihouzonggushu" valueType="number" required>
+          <FaBasicFormItem layout={layout} label="目标规模" name="vendorPeople" valueType="number">
             <InputNumber style={{ width: '100%' }} formatter={value => value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} />
           </FaBasicFormItem>
         </div>
@@ -493,19 +479,51 @@ function FundInfoForm(props) {
 
       <div style={{ display: 'flex' }}>
         <div style={{ flex: 1 }}>
-          <FaBasicFormItem layout={layout} label="投后估值" name="touhouguzhi" valueType="number" required>
-            <InputNumber style={{ width: '100%' }} formatter={value => value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} />
+          <FaBasicFormItem layout={layout} label="存续期" name="jiaoyiqianzonggushu">
+            <Input />
           </FaBasicFormItem>
         </div>
 
         <div style={{ flex: 1 }}>
-          <FaBasicFormItem layout={layout} label="我司持股比例" name="wosichigubili" valueType="number" required>
+          <FaBasicFormItem layout={layout} label="投资期管理费率(%)" name="jiaoyihouzonggushu">
+            <Input />
+          </FaBasicFormItem>
+        </div>
+      </div>
+
+      <div style={{ display: 'flex' }}>
+        <div style={{ flex: 1 }}>
+          <FaBasicFormItem layout={layout} label="退出期管理费率(%)" name="tuichuqi">
+            <Input />
+          </FaBasicFormItem>
+        </div>
+
+        <div style={{ flex: 1 }}>
+          <FaBasicFormItem layout={layout} label="延长期管理费率(%)" name="yanchangqi">
+            <Input />
+          </FaBasicFormItem>
+        </div>
+      </div>
+
+      <div style={{ display: 'flex' }}>
+        <div style={{ flex: 1 }}>
+          <FaBasicFormItem layout={layout} label="基石投资人出资比例" name="touhouguzhi">
+            <Input />
+          </FaBasicFormItem>
+        </div>
+
+        <div style={{ flex: 1 }}>
+          <FaBasicFormItem layout={layout} label="基石投资人出资金额" name="wosichigubili" valueType="number">
             <InputNumber style={{ width: '100%' }} formatter={value => value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} />
           </FaBasicFormItem>
         </div>
       </div>
 
-      <FaBasicFormItem label="备注" name="remark">
+      <FaBasicFormItem label="基石投资人出资要求" name="requirements">
+        <Input />
+      </FaBasicFormItem>
+
+      <FaBasicFormItem label="基金简介" name="remark">
         <Input />
       </FaBasicFormItem>
 
