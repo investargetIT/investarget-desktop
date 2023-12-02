@@ -7,11 +7,11 @@ import {
   FormKickoffDocs,
   FormInvestigationInfo,
   FormInvestigationDocs,
-  FormCommunicationMeeting,
   FormDecisionMeeting,
   FormInvestmentDocs,
   FormPaymentDocs,
   FormFundInfo,
+  FormFundFiling,
 } from './FormFund';
 
 const { Step } = Steps;
@@ -68,7 +68,6 @@ function FaFundPipeline() {
           {current === 3 && (
             <div>
               <Card title="预沟通会" style={{ marginBottom: 20 }}>
-                <FormCommunicationMeeting />
               </Card>
               <Card title="投决会" style={{ marginBottom: 20 }}>
                 <FormDecisionMeeting />
@@ -81,8 +80,8 @@ function FaFundPipeline() {
             </Card>
           )}
           {current === 5 && (
-            <Card title="文档" style={{ marginBottom: 20 }}>
-              <FormPaymentDocs />
+            <Card title="基金备案" style={{ marginBottom: 20 }}>
+              <FormFundFiling />
             </Card>
           )}
         </div>

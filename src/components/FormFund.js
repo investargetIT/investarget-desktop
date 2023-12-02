@@ -268,33 +268,74 @@ function InvestigationDocsForm(props) {
 const ConnectedInvestigationDocsForm = connect()(InvestigationDocsForm);
 const FormInvestigationDocs = React.forwardRef((props, ref) => <ConnectedInvestigationDocsForm {...props} forwardedRef={ref} />);
 
-function CommunicationMeetingForm(props) {
+function FundFilingForm(props) {
   const [form] = Form.useForm();
   useEffect(() => {
-    const formValuesStr = localStorage.getItem('communicationMeetingFormValues');
+    const formValuesStr = localStorage.getItem('FundFilingFormValues');
     if (formValuesStr) {
       const formValues = JSON.parse(formValuesStr);
-      form.setFieldsValue(formValues);
+      const startdate = moment(formValues.startdate);
+      const enddate = moment(formValues.enddate);
+      form.setFieldsValue({ ...formValues, startdate, enddate });
     }
     return () => {
       form.validateFields()
         .then(formValues => {
-          localStorage.setItem('communicationMeetingFormValues', JSON.stringify(formValues));
+          localStorage.setItem('FundFilingFormValues', JSON.stringify(formValues));
         });
     };
   }, []);
+  const layout = {
+    labelCol: {
+      xs: { span: 24 },
+      sm: { span: 12 },
+    },
+    wrapperCol: {
+      xs: { span: 24 },
+      sm: { span: 12 },
+    },
+  };
   return (
     <Form ref={props.forwardedRef} form={form} className="fa-form">
-      <FaUploadFormItem label="投决报告" name="descisionReport" required />
-      <FaUploadFormItem label="预沟通会会议纪要" name="communicationMeetingSummary" />
-      <FaBasicFormItem label="预沟通会后跟进情况" name="communicationMeetingAfterwards">
+      <div style={{ display: 'flex' }}>
+        <div style={{ flex: 1 }}>
+          <FaBasicFormItem layout={layout} label="备案申请日期" name="startdate" valueType="object">
+            <DatePicker style={{ width: '100%' }} />
+          </FaBasicFormItem>
+        </div>
+
+        <div style={{ flex: 1 }}>
+          <FaBasicFormItem layout={layout} label="备案状态" name="status">
+            <Input />
+          </FaBasicFormItem>
+        </div>
+      </div>
+      <div style={{ display: 'flex' }}>
+        <div style={{ flex: 1 }}>
+          <FaBasicFormItem layout={layout} label="备案通过日期" name="enddate" valueType="object">
+            <DatePicker style={{ width: '100%' }} />
+          </FaBasicFormItem>
+        </div>
+
+        <div style={{ flex: 1 }}>
+          <FaBasicFormItem layout={layout} label="备案编号" name="no">
+            <Input />
+          </FaBasicFormItem>
+        </div>
+      </div>
+      <FaBasicFormItem label="备案说明" name="FundFilingAfterwards">
         <Input />
       </FaBasicFormItem>
+      <FaUploadFormItem label="合伙人确认书" name="hehuorenquerenshu" required />
+      <FaUploadFormItem label="企业合伙人名录" name="FundFilingSummary" />
+      <FaUploadFormItem label="验资报告" name="yanzibaogao" />
+      <FaUploadFormItem label="执行事务合伙人委托书" name="hehuorenweituoshu" />
+      <FaUploadFormItem label="其他文档" name="others" />
     </Form>
   );
 }
-const ConnectedCommunicationMeetingForm = connect()(CommunicationMeetingForm);
-const FormCommunicationMeeting = React.forwardRef((props, ref) => <ConnectedCommunicationMeetingForm {...props} forwardedRef={ref} />);
+const ConnectedFundFilingForm = connect()(FundFilingForm);
+const FormFundFiling = React.forwardRef((props, ref) => <ConnectedFundFilingForm {...props} forwardedRef={ref} />);
 
 function DecisionMeetingForm(props) {
 
@@ -541,7 +582,7 @@ export {
   FormKickoffDocs,
   FormInvestigationInfo,
   FormInvestigationDocs,
-  FormCommunicationMeeting,
+  FormFundFiling,
   FormDecisionMeeting,
   FormInvestmentDocs,
   FormPaymentDocs,
