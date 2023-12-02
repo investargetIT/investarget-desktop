@@ -11,7 +11,7 @@ import {
   FormDecisionMeeting,
   FormInvestmentDocs,
   FormPaymentDocs,
-} from './FormPreInvest';
+} from './FormFund';
 
 const { Step } = Steps;
 
