@@ -1228,7 +1228,7 @@ class SelectOrgInvestor extends React.Component {
       tag,
       allowCreate,
       handleAddBtnClick,
-      ...extraProps,
+      ...extraProps
     } = this.props;
     const _options = this.state.options.map(item => ({ label: item.label, value: String(item.value), user: item.user }))
     let _value
