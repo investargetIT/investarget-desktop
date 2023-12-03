@@ -119,7 +119,7 @@ function KickoffMeetingForm(props) {
     const formValuesStr = localStorage.getItem('kickoffMeetingFormValues');
     if (formValuesStr) {
       const formValues = JSON.parse(formValuesStr);
-      const date = moment(formValues.date)
+      const date = formValues.date ? moment(formValues.date) : undefined;
       form.setFieldsValue({ ...formValues, date });
     }
     return () => {
@@ -290,8 +290,8 @@ function FundFilingForm(props) {
     const formValuesStr = localStorage.getItem('FundFilingFormValues');
     if (formValuesStr) {
       const formValues = JSON.parse(formValuesStr);
-      const startdate = moment(formValues.startdate);
-      const enddate = moment(formValues.enddate);
+      const startdate = formValues.startdate ? moment(formValues.startdate) : undefined;
+      const enddate = formValues.enddate ? moment(formValues.enddate) : undefined;
       form.setFieldsValue({ ...formValues, startdate, enddate });
     }
     return () => {
@@ -353,21 +353,21 @@ function FundFilingForm(props) {
 const ConnectedFundFilingForm = connect()(FundFilingForm);
 const FormFundFiling = React.forwardRef((props, ref) => <ConnectedFundFilingForm {...props} forwardedRef={ref} />);
 
-function DecisionMeetingForm(props) {
+function FundPrepareForm(props) {
 
   const [form] = Form.useForm();
 
   useEffect(() => {
-    const formValuesStr = localStorage.getItem('decisionMeetingFormValues');
+    const formValuesStr = localStorage.getItem('FundPrepareFormValues');
     if (formValuesStr) {
       const formValues = JSON.parse(formValuesStr);
-      const date = moment(formValues.date);
+      const date = formValues.date ? moment(formValues.date) : undefined;
       form.setFieldsValue({ ...formValues, date });
     }
     return () => {
       form.validateFields()
         .then(formValues => {
-          localStorage.setItem('decisionMeetingFormValues', JSON.stringify(formValues));
+          localStorage.setItem('FundPrepareFormValues', JSON.stringify(formValues));
         });
     };
   }, []);
@@ -387,40 +387,37 @@ function DecisionMeetingForm(props) {
     <Form ref={props.forwardedRef} form={form} className="fa-form">
       <div style={{ display: 'flex' }}>
         <div style={{ flex: 1 }}>
-          <FaBasicFormItem layout={layout} label="会议日期" name="date" valueType="object">
-            <DatePicker style={{ width: '100%' }} />
+          <FaBasicFormItem layout={layout} label="基金主体" name="fundname">
+            <Input />
           </FaBasicFormItem>
         </div>
 
         <div style={{ flex: 1 }}>
-          <FaBasicFormItem layout={layout} label="会议结论" name="result">
+          <FaBasicFormItem layout={layout} label="基金累计关闭规模" name="result">
             <Input />
           </FaBasicFormItem>
         </div>
       </div>
 
-      <FaBasicFormItem label="内部参会人员" name="accountoffice">
-        <Input />
-      </FaBasicFormItem>
+      <div style={{ display: 'flex' }}>
+        <div style={{ flex: 1 }}>
+          <FaBasicFormItem layout={layout} label="签署日期" name="date" valueType="object">
+            <DatePicker style={{ width: '100%' }} />
+          </FaBasicFormItem>
+        </div>
 
-      <FaBasicFormItem label="外部参会人员" name="accountant">
-        <Input />
-      </FaBasicFormItem>
-
-      <FaBasicFormItem label="会议报告" name="provider">
-        <Input />
-      </FaBasicFormItem>
-
-      <FaBasicFormItem label="决策会议决议" name="vendorPeople">
-        <Input />
-      </FaBasicFormItem>
-
+        <div style={{ flex: 1 }}>
+          <FaBasicFormItem layout={layout} label="交割状态" name="status">
+            <Input />
+          </FaBasicFormItem>
+        </div>
+      </div>
     </Form>
   );
 }
 
-const ConnectedDecisionMeetingForm = connect()(DecisionMeetingForm);
-const FormDecisionMeeting = React.forwardRef((props, ref) => <ConnectedDecisionMeetingForm {...props} forwardedRef={ref} />);
+const ConnectedFundPrepareForm = connect()(FundPrepareForm);
+const FormFundPrepare = React.forwardRef((props, ref) => <ConnectedFundPrepareForm {...props} forwardedRef={ref} />);
 
 function InvestmentDocsForm(props) {
   const [form] = Form.useForm();
@@ -597,7 +594,7 @@ export {
   FormInvestigationInfo,
   FormInvestigationDocs,
   FormFundFiling,
-  FormDecisionMeeting,
+  FormFundPrepare,
   FormInvestmentDocs,
   FormFundEst,
   FormFundInfo,

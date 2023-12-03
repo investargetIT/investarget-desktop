@@ -119,7 +119,7 @@ function KickoffMeetingForm(props) {
     const formValuesStr = localStorage.getItem('kickoffMeetingFormValues');
     if (formValuesStr) {
       const formValues = JSON.parse(formValuesStr);
-      const date = moment(formValues.date)
+      const date = formValues.date ? moment(formValues.date) : undefined;
       form.setFieldsValue({ ...formValues, date });
     }
     return () => {
@@ -304,7 +304,7 @@ function DecisionMeetingForm(props) {
     const formValuesStr = localStorage.getItem('decisionMeetingFormValues');
     if (formValuesStr) {
       const formValues = JSON.parse(formValuesStr);
-      const date = moment(formValues.date);
+      const date = formValues.date ? moment(formValues.date) : undefined;;
       form.setFieldsValue({ ...formValues, date });
     }
     return () => {
@@ -412,7 +412,7 @@ function AgreementInfoForm(props) {
     const formValuesStr = localStorage.getItem('agreementInfoFormValues');
     if (formValuesStr) {
       const formValues = JSON.parse(formValuesStr);
-      const date = moment(formValues.date)
+      const date = formValues.date ? moment(formValues.date) : undefined;
       form.setFieldsValue({ ...formValues, date });
     }
     return () => {

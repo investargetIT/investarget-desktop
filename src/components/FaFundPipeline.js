@@ -6,6 +6,7 @@ import {
   FormFundEst,
   FormFundBankInfo,
   FormInvestmentDocs,
+  FormFundPrepare,
 } from './FormFund';
 
 const { Step } = Steps;
@@ -79,10 +80,9 @@ function FaFundPipeline() {
           )}
           {current === 1 && (
             <div>
-              {/* <Card title="立项材料" style={{ marginBottom: 20 }}>
+              <Card title="基金募集" style={{ marginBottom: 20 }}>
+                <FormFundPrepare />
               </Card>
-              <Card title="立项会" style={{ marginBottom: 20 }}>
-              </Card> */}
             </div>
           )}
           {current === 2 && (
