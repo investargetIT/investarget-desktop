@@ -1,17 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { Steps, Card, Table } from 'antd';
 import {
-  FormProjectBasicInfo,
-  FormProjectBasicInfoDocs,
-  FormKickoffMeeting,
-  FormKickoffDocs,
-  FormInvestigationInfo,
-  FormInvestigationDocs,
-  FormDecisionMeeting,
-  FormInvestmentDocs,
-  FormPaymentDocs,
   FormFundInfo,
   FormFundFiling,
+  FormFundEst,
+  FormFundBankInfo,
 } from './FormFund';
 
 const { Step } = Steps;
@@ -85,30 +78,25 @@ function FaFundPipeline() {
           )}
           {current === 1 && (
             <div>
-              <Card title="立项材料" style={{ marginBottom: 20 }}>
-                <FormKickoffDocs />
+              {/* <Card title="立项材料" style={{ marginBottom: 20 }}>
               </Card>
               <Card title="立项会" style={{ marginBottom: 20 }}>
-                <FormKickoffMeeting ref={kickoffMeetingformRef} />
-              </Card>
+              </Card> */}
             </div>
           )}
           {current === 2 && (
             <div>
-              <Card title="尽调机构" style={{ marginBottom: 20 }}>
-                <FormInvestigationInfo />
-              </Card>
-              <Card title="尽调文档" style={{ marginBottom: 20 }}>
-                <FormInvestigationDocs />
+              <Card title="基金协议" style={{ marginBottom: 20 }}>
               </Card>
             </div>
           )}
           {current === 3 && (
             <div>
-              <Card title="预沟通会" style={{ marginBottom: 20 }}>
+              <Card title="相关文档" style={{ marginBottom: 20 }}>
+                <FormFundEst />
               </Card>
-              <Card title="投决会" style={{ marginBottom: 20 }}>
-                <FormDecisionMeeting />
+              <Card title="托管银行" style={{ marginBottom: 20 }}>
+                <FormFundBankInfo />
               </Card>
             </div>
           )}

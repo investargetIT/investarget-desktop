@@ -158,20 +158,36 @@ function KickoffMeetingForm(props) {
 const ConnectedKickoffMeetingForm = connect()(KickoffMeetingForm);
 const FormKickoffMeeting = React.forwardRef((props, ref) => <ConnectedKickoffMeetingForm {...props} forwardedRef={ref} />);
 
-function KickoffDocsForm(props) {
+function FundBankInfoForm(props) {
   
   const [form] = Form.useForm();
 
+  useEffect(() => {
+    const formValuesStr = localStorage.getItem('FundBankInfoFormValues');
+    if (formValuesStr) {
+      const formValues = JSON.parse(formValuesStr);
+      form.setFieldsValue(formValues);
+    }
+    return () => {
+      form.validateFields()
+        .then(formValues => {
+          localStorage.setItem('FundBankInfoFormValues', JSON.stringify(formValues));
+        });
+    };
+  }, []);
+
   return (
     <Form ref={props.forwardedRef} form={form} className="fa-form">
-      <FaUploadFormItem label="立项报告" name="kickoffDocsReport" required />
-      <FaUploadFormItem label="其它材料" name="kickoffDocsOthers" />
+      <FaBasicFormItem label="托管银行" name="fundbank">
+        <Input />
+      </FaBasicFormItem>
+      <FaUploadFormItem label="托管协议" name="FundBankInfoOthers" />
     </Form>
   );
 }
 
-const ConnectedKickoffDocsForm = connect()(KickoffDocsForm);
-const FormKickoffDocs = React.forwardRef((props, ref) => <ConnectedKickoffDocsForm {...props} forwardedRef={ref} />);
+const ConnectedFundBankInfoForm = connect()(FundBankInfoForm);
+const FormFundBankInfo = React.forwardRef((props, ref) => <ConnectedFundBankInfoForm {...props} forwardedRef={ref} />);
 
 function InvestigationInfoForm(props) {
 
@@ -428,22 +444,20 @@ function InvestmentDocsForm(props) {
 const ConnectedInvestmentDocsForm = connect()(InvestmentDocsForm);
 const FormInvestmentDocs = React.forwardRef((props, ref) => <ConnectedInvestmentDocsForm {...props} forwardedRef={ref} />);
 
-function PaymentDocsForm(props) {
+function FundEstForm(props) {
   const [form] = Form.useForm();
   return (
     <Form ref={props.forwardedRef} form={form} className="fa-form">
-      <FaUploadFormItem label="相关交割文件" name="jiaogewenjian" required />
-      <FaUploadFormItem label="交割确认函" name="jiaogequerenhan" required />
-      <FaUploadFormItem label="股东会决议" name="judonghuijueyi" required />
-      <FaUploadFormItem label="收款方的营业执照复印件" name="yingyezhizhaofuyinjian" required />
-      <FaUploadFormItem label="付款通知书或缴款通知书" name="tongzhishu" required />
-      <FaUploadFormItem label="银行要求的其他文件" name="qitawenjian" />
-      <FaUploadFormItem label="首款证明" name="shoukuanzhengming" />
+      <FaUploadFormItem label="注册文档" name="fundest_zhucewendang" required />
+      <FaUploadFormItem label="营业执照" name="fundest_yingyezhizhao" required />
+      <FaUploadFormItem label="开户许可证" name="fundest_kaihuxukezheng" required />
+      <FaUploadFormItem label="登记材料" name="fundest_dengjicailiao" required />
+      <FaUploadFormItem label="其它文档" name="fundest_others" required />
     </Form>
   );
 }
-const ConnectedPaymentDocsForm = connect()(PaymentDocsForm);
-const FormPaymentDocs = React.forwardRef((props, ref) => <ConnectedPaymentDocsForm {...props} forwardedRef={ref} />);
+const ConnectedFundEstForm = connect()(FundEstForm);
+const FormFundEst = React.forwardRef((props, ref) => <ConnectedFundEstForm {...props} forwardedRef={ref} />);
 
 function FundInfoForm(props) {
 
@@ -579,12 +593,12 @@ export {
   FormProjectBasicInfo,
   FormProjectBasicInfoDocs,
   FormKickoffMeeting,
-  FormKickoffDocs,
+  FormFundBankInfo,
   FormInvestigationInfo,
   FormInvestigationDocs,
   FormFundFiling,
   FormDecisionMeeting,
   FormInvestmentDocs,
-  FormPaymentDocs,
+  FormFundEst,
   FormFundInfo,
 };
