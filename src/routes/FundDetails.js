@@ -5,7 +5,7 @@ import FaFundPipeline from '../components/FaFundPipeline';
 
 function FundDetails(props) {
   return (
-    <LeftRightLayout title="基金名称" location={props.location} style={{}} innerStyle={{ background: 'unset' }}>
+    <LeftRightLayout title="基金名称" location={props.location} style={{ marginRight: 20 }} innerStyle={{ background: 'unset' }}>
       <FaFundPipeline />
     </LeftRightLayout>
   );

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Steps, Card } from 'antd';
+import { Steps, Card, Table } from 'antd';
 import {
   FormProjectBasicInfo,
   FormProjectBasicInfoDocs,
@@ -25,6 +25,44 @@ function FaFundPipeline() {
   const onChange = (value) => {
     setCurrent(value);
   };
+  
+  const columns = [
+    {
+      title: '提款批次',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: '提款金额',
+      dataIndex: 'age',
+      key: 'age',
+    },
+    {
+      title: '提款日期',
+      dataIndex: 'address',
+      key: 'address',
+    },
+    {
+      title: '截止日期',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: 'call款方式',
+      dataIndex: 'age',
+      key: 'age',
+    },
+    {
+      title: 'call款类型',
+      dataIndex: 'address',
+      key: 'address',
+    },
+    {
+      title: '备注',
+      dataIndex: 'address',
+      key: 'address',
+    },
+  ];
 
   return (
     <div>
@@ -75,8 +113,9 @@ function FaFundPipeline() {
             </div>
           )}
           {current === 4 && (
-            <Card title="协议信息" style={{ marginBottom: 20 }}>
-              <FormInvestmentDocs />
+            <Card title="提款信息" style={{ marginBottom: 20 }}>
+              <div style={{ marginBottom: 20 }}>累计提款：0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;累计实缴：0</div>
+              <Table size="small" style={{ border: '1px solid #f0f0f0', borderBottomWidth: 0 }} dataSource={[]} columns={columns} />
             </Card>
           )}
           {current === 5 && (
