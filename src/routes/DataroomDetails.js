@@ -145,7 +145,7 @@ function DataroomDetails(props) {
   }
 
   function getAllUserFile() {
-    api.queryUserDataRoom({ dataroom: dataroomID }).then(result => {
+    api.queryUserDataRoom({ dataroom: dataroomID }).then(async result => {
       let list = result.data.data
       list = list.map(m => {
         const user = m.user;
@@ -176,21 +176,41 @@ function DataroomDetails(props) {
       setUserDataroomIds(userDataroomIds);
       setUserDataroomMap(userDataroomMap);
       
-      return Promise.all(list.map((item) => {
-        return api.getUserDataroomFile(dataroomID, item.user.id).then((result1) => {
-          const { data } = result1.data;
-          return data.filter(f => f.file !== null).map((m) => {
-            return { id: m.id, dataroomUserfileId: item.id, file: m.file.id, user: item.user.id };
-          });
-        });
-      })).then(results => {
-        const list = results.reduce((a, b) => a.concat(b), [])
-        setFileUserList(list);
-      });
+      const result1 = [];
+      for (let index = 0; index < list.length; index++) {
+        const item = list[index];
+        const userFile = await getUserDataroomFile(dataroomID, item);
+        result1.push(userFile);
+      }
+      const userFileList = result1.reduce((a, b) => a.concat(b), []);
+      setFileUserList(userFileList);
+
+      // Promise.all(list.map((item) => {
+      //   return api.getUserDataroomFile(dataroomID, item.user.id)
+      //     .then((result1) => {
+      //       const { data } = result1.data;
+      //       return data.filter(f => f.file !== null).map((m) => {
+      //         return { id: m.id, dataroomUserfileId: item.id, file: m.file.id, user: item.user.id };
+      //       });
+      //     });
+      // })).then(results => {
+      //   const list = results.reduce((a, b) => a.concat(b), [])
+      //   setFileUserList(list);
+      // });
 
     }).catch(error => {
       handleError(error)
     })
+  }
+
+  async function getUserDataroomFile(dataroomID, item) {
+    return api.getUserDataroomFile(dataroomID, item.user.id)
+    .then((result1) => {
+      const { data } = result1.data;
+      return data.filter(f => f.file !== null).map((m) => {
+        return { id: m.id, dataroomUserfileId: item.id, file: m.file.id, user: item.user.id };
+      });
+    });
   }
 
   function formatData(data) {
