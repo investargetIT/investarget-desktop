@@ -141,17 +141,17 @@ function DataroomDetails(props) {
     // setExpandedRows(dataroomUserOrgBd.map(m => m.id));
   }
 
-  async function checkUserNewFile(userIds) {
-    const res = await Promise.all(userIds.map(m => api.getNewDataroomFile(dataroomID, m)));
-    let result = [];
-    for (let index = 0; index < res.length; index++) {
-      const element = res[index];
-      if (element.data.length > 0) {
-        result.push(userIds[index]);
-      }
-    }
-    setUserWithNewDataroomFile(result);
-  }
+  // async function checkUserNewFile(userIds) {
+  //   const res = await Promise.all(userIds.map(m => api.getNewDataroomFile(dataroomID, m)));
+  //   let result = [];
+  //   for (let index = 0; index < res.length; index++) {
+  //     const element = res[index];
+  //     if (element.data.length > 0) {
+  //       result.push(userIds[index]);
+  //     }
+  //   }
+  //   setUserWithNewDataroomFile(result);
+  // }
 
   function getAllUserFile() {
     api.queryUserDataRoom({ dataroom: dataroomID }).then(result => {
@@ -169,7 +169,7 @@ function DataroomDetails(props) {
 
       const users = list.map(item => item.user)
       const userIds = users.map(item => item.id)
-      checkUserNewFile(userIds);
+      // checkUserNewFile(userIds);
       const userDataroomIds = list.map(item => item.id)
       var userDataroomMap = {}
       userIds.forEach((userId, index) => {
@@ -360,34 +360,34 @@ function DataroomDetails(props) {
     api.addDataroomTemp(body).then(getDataRoomTemp).catch(handleError);
   }
 
-  function handleAddUser() {
-    const param = { dataroom: dataroomID, user: newUser, trader: isLogin().id };
-    api.addUserDataRoom(param).then(result => {
-      setNewUser(null);
-      getAllUserFile()
-      const { id: dataroomUserfile, dataroom, user } = result.data;
-      const body = { dataroomUserfile, dataroom, user };
-      if (hasPermissionForDataroomTemp) {
-        handleSaveTemplate(body);
-      }
-    }).catch(handleError);
-  }
+  // function handleAddUser() {
+  //   const param = { dataroom: dataroomID, user: newUser, trader: isLogin().id };
+  //   api.addUserDataRoom(param).then(result => {
+  //     setNewUser(null);
+  //     getAllUserFile()
+  //     const { id: dataroomUserfile, dataroom, user } = result.data;
+  //     const body = { dataroomUserfile, dataroom, user };
+  //     if (hasPermissionForDataroomTemp) {
+  //       handleSaveTemplate(body);
+  //     }
+  //   }).catch(handleError);
+  // }
 
-  function handleConfirmSelectDataroomTemp() {
-    const body = { user: dataRoomTempModalUserId };
-    api.applyDataroomTemp(selectedDataroomTemp, body).then(() => {
-      Modal.success({
-        title: i18n('success'),
-        content: '应用模版成功',
-      });
-      setShowDataRoomTempModal(false);
-      getAllUserFile();
-    });
-    api.editDataroomTemp(
-      selectedDataroomTemp,
-      { password: pdfPasswordForTemp },
-    ).then(getDataRoomTemp);
-  }
+  // function handleConfirmSelectDataroomTemp() {
+  //   const body = { user: dataRoomTempModalUserId };
+  //   api.applyDataroomTemp(selectedDataroomTemp, body).then(() => {
+  //     Modal.success({
+  //       title: i18n('success'),
+  //       content: '应用模版成功',
+  //     });
+  //     setShowDataRoomTempModal(false);
+  //     getAllUserFile();
+  //   });
+  //   api.editDataroomTemp(
+  //     selectedDataroomTemp,
+  //     { password: pdfPasswordForTemp },
+  //   ).then(getDataRoomTemp);
+  // }
 
   function getProgressBackground(id) {
     if (id === 6) {
@@ -435,71 +435,71 @@ function DataroomDetails(props) {
     }
   }
 
-  function handleSendEmail(item) {
-    api.sendEmailToDataroomUser(item.id)
-      .then(_ => {
-        Modal.success({ title: '邮件发送成功' });
-      })
-      .catch(handleError);
-  }
+  // function handleSendEmail(item) {
+  //   api.sendEmailToDataroomUser(item.id)
+  //     .then(_ => {
+  //       Modal.success({ title: '邮件发送成功' });
+  //     })
+  //     .catch(handleError);
+  // }
 
-  function handleSendNewFileEmail(item) {
-    api.sendNewFileEmail(item.id)
-      .then(result => {
-        echo(result);
-        Modal.success({ title: '邮件发送成功' });
-      })
-      .catch(handleError);
-  }
+  // function handleSendNewFileEmail(item) {
+  //   api.sendNewFileEmail(item.id)
+  //     .then(result => {
+  //       echo(result);
+  //       Modal.success({ title: '邮件发送成功' });
+  //     })
+  //     .catch(handleError);
+  // }
 
-  function handleDeleteUser(item) {
-    const { id: dataroomUserId, user: { id: userId } } = item;
-    const userDataroomTemp = dataRoomTemp.filter(f => f.user === userId);
-    api.deleteUserDataRoom(dataroomUserId).then(_ => {
-      getAllUserFile();
-      if (userDataroomTemp.length > 0) {
-        api.deleteDataroomTemp(userDataroomTemp[0].id);
-      }
-    }).catch(error => {
-      handleError(error)
-    });
-  }
+  // function handleDeleteUser(item) {
+  //   const { id: dataroomUserId, user: { id: userId } } = item;
+  //   const userDataroomTemp = dataRoomTemp.filter(f => f.user === userId);
+  //   api.deleteUserDataRoom(dataroomUserId).then(_ => {
+  //     getAllUserFile();
+  //     if (userDataroomTemp.length > 0) {
+  //       api.deleteDataroomTemp(userDataroomTemp[0].id);
+  //     }
+  //   }).catch(error => {
+  //     handleError(error)
+  //   });
+  // }
 
-  function generatePopoverContent(item) {
-    const { user: { id: userId } } = item;
-    return (
-      <div>
-        {hasPerm('usersys.as_trader') ?
-          <div style={{ color: '#989898' }}>
-            <div><Link to={`/app/user/${item.user.id}`} target="_blank">{item.user.username}</Link></div>
-            <div>机构名称：{item.user.org ? <Link to={`/app/organization/${item.user.org.id}`} target="_blank">{item.user.org.orgname}</Link> : '暂无机构'}</div>
-          </div>
-          :
-          <div style={{ color: '#989898' }}>
-            <div>{item.user.username}</div>
-            <div>机构名称：{item.user.org ? item.user.org.orgname : '暂无机构'}</div>
-          </div>
-        }
+  // function generatePopoverContent(item) {
+  //   const { user: { id: userId } } = item;
+  //   return (
+  //     <div>
+  //       {hasPerm('usersys.as_trader') ?
+  //         <div style={{ color: '#989898' }}>
+  //           <div><Link to={`/app/user/${item.user.id}`} target="_blank">{item.user.username}</Link></div>
+  //           <div>机构名称：{item.user.org ? <Link to={`/app/organization/${item.user.org.id}`} target="_blank">{item.user.org.orgname}</Link> : '暂无机构'}</div>
+  //         </div>
+  //         :
+  //         <div style={{ color: '#989898' }}>
+  //           <div>{item.user.username}</div>
+  //           <div>机构名称：{item.user.org ? item.user.org.orgname : '暂无机构'}</div>
+  //         </div>
+  //       }
 
-        <div style={{ color: '#989898' }}>最近登录：{item.lastgettime ? item.lastgettime.slice(0, 16).replace('T', ' ') : '暂无'}</div>
+  //       <div style={{ color: '#989898' }}>最近登录：{item.lastgettime ? item.lastgettime.slice(0, 16).replace('T', ' ') : '暂无'}</div>
 
-        {(hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
-          <div style={{ textAlign: 'center', marginTop: 10 }}>
-            <Popconfirm title="确定发送邮件通知该用户？" onConfirm={() => handleSendEmail(item)}>
-              <Button style={{ marginRight: 10 }}>{i18n('dataroom.send_email_notification')}</Button>
-            </Popconfirm>
-            <Popconfirm title="确定发送新增文件邮件给该用户吗？" onConfirm={() => handleSendNewFileEmail(item)}>
-              <Button disabled={!userWithNewDataroomFile.includes(userId)} style={{ marginRight: 10 }}>{i18n('dataroom.send_new_file_notification')}</Button>
-            </Popconfirm>
-            <Popconfirm title={i18n('delete_confirm')} onConfirm={() => handleDeleteUser(item)}>
-              <Button type="primary">移除</Button>
-            </Popconfirm>
-          </div>
-        }
+  //       {(hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
+  //         <div style={{ textAlign: 'center', marginTop: 10 }}>
+  //           <Popconfirm title="确定发送邮件通知该用户？" onConfirm={() => handleSendEmail(item)}>
+  //             <Button style={{ marginRight: 10 }}>{i18n('dataroom.send_email_notification')}</Button>
+  //           </Popconfirm>
+  //           <Popconfirm title="确定发送新增文件邮件给该用户吗？" onConfirm={() => handleSendNewFileEmail(item)}>
+  //             <Button disabled={!userWithNewDataroomFile.includes(userId)} style={{ marginRight: 10 }}>{i18n('dataroom.send_new_file_notification')}</Button>
+  //           </Popconfirm>
+  //           <Popconfirm title={i18n('delete_confirm')} onConfirm={() => handleDeleteUser(item)}>
+  //             <Button type="primary">移除</Button>
+  //           </Popconfirm>
+  //         </div>
+  //       }
 
-      </div>
-    );
-  }
+  //     </div>
+  //   );
+  // }
 
   // const columns = [
   //   {
