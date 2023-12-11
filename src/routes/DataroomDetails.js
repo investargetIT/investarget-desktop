@@ -74,6 +74,7 @@ function DataroomDetails(props) {
   const [expandedRows, setExpandedRows] = useState([]);
   const [loadingOrgBD, setLoadingOrgBD] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingCheckUserNewFile, setLoadingCheckUserNewFile] = useState(false);
   const [parentId, setParentId] = useState(parseInt(parentID, 10) || -999);
   const [searchContent, setSearchContent] = useState('');
   const [displayQRCode, setDisplayQRCode] = useState(false);
@@ -130,6 +131,7 @@ function DataroomDetails(props) {
   }
 
   async function checkUserNewFile(userIds) {
+    setLoadingCheckUserNewFile(true);
     const res = await Promise.all(userIds.map(m => api.getNewDataroomFile(dataroomID, m)));
     let result = [];
     for (let index = 0; index < res.length; index++) {
@@ -138,7 +140,8 @@ function DataroomDetails(props) {
         result.push(userIds[index]);
       }
     }
-    setUserWithNewDataroomFile(result);
+    setUserWithNewDataroomFile(userWithNewDataroomFile.concat(result));
+    setLoadingCheckUserNewFile(false);
   }
 
   function getAllUserFile() {
@@ -160,7 +163,7 @@ function DataroomDetails(props) {
 
       const users = list.map(item => item.user)
       const userIds = users.map(item => item.id)
-      checkUserNewFile(userIds);
+      // checkUserNewFile(userIds);
       const userDataroomIds = list.map(item => item.id)
       var userDataroomMap = {}
       userIds.forEach((userId, index) => {
@@ -432,7 +435,7 @@ function DataroomDetails(props) {
               <Button style={{ marginRight: 10 }}>{i18n('dataroom.send_email_notification')}</Button>
             </Popconfirm>
             <Popconfirm title="确定发送新增文件邮件给该用户吗？" onConfirm={() => handleSendNewFileEmail(item)}>
-              <Button disabled={!userWithNewDataroomFile.includes(userId)} style={{ marginRight: 10 }}>{i18n('dataroom.send_new_file_notification')}</Button>
+              <Button disabled={!userWithNewDataroomFile.includes(userId)} loading={loadingCheckUserNewFile} style={{ marginRight: 10 }}>{i18n('dataroom.send_new_file_notification')}</Button>
             </Popconfirm>
             <Popconfirm title={i18n('delete_confirm')} onConfirm={() => handleDeleteUser(item)}>
               <Button type="primary">移除</Button>
@@ -442,6 +445,12 @@ function DataroomDetails(props) {
 
       </div>
     );
+  }
+
+  function handleUserHover(item) {
+    const { user: { id: userId } } = item;
+    if (userWithNewDataroomFile.includes(userId)) return;
+    checkUserNewFile([userId]);
   }
 
   const columns = [
@@ -460,7 +469,7 @@ function DataroomDetails(props) {
                   key={item.user.id}
                   content={generatePopoverContent(item)}
                 >
-                  <Tag style={{ cursor: 'default' }}>{item.user.username}</Tag>
+                  <Tag style={{ cursor: 'default' }} onMouseEnter={() => handleUserHover(item)}>{item.user.username}</Tag>
                 </Popover>
               ))}
           </div>
@@ -674,17 +683,17 @@ function DataroomDetails(props) {
     toggleUserDataroomFiles(user, removedFiles, false);
   }
 
-  function handleOrgBDExpand(_, record) {
-    const currentId = record.id;
-    const newExpanded = expandedRows;
-    const expandIndex = newExpanded.indexOf(currentId);
-    if (expandIndex < 0) {
-      newExpanded.push(currentId);
-    } else {
-      newExpanded.splice(expandIndex, 1);
-    }
-    setExpandedRows(newExpanded);
-  }
+  // function handleOrgBDExpand(_, record) {
+  //   const currentId = record.id;
+  //   const newExpanded = expandedRows;
+  //   const expandIndex = newExpanded.indexOf(currentId);
+  //   if (expandIndex < 0) {
+  //     newExpanded.push(currentId);
+  //   } else {
+  //     newExpanded.splice(expandIndex, 1);
+  //   }
+  //   setExpandedRows(newExpanded);
+  // }
 
   function handleUploadFile(file, parentId) {
     const body = {
