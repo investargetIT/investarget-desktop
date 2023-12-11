@@ -63,7 +63,7 @@ function DataroomDetails(props) {
   const [userOptions, setUserOptions] = useState([]);
   const [userDataroomIds, setUserDataroomIds] = useState([]);
   const [userDataroomMap, setUserDataroomMap] = useState({});
-  const [selectedUser, setSelectedUser] = useState(null);
+  // const [selectedUser, setSelectedUser] = useState(null);
   const [fileUserList, setFileUserList] = useState([]);
   const [readFileUserList, setReadFileUserList] = useState([]);
   const [targetUserFileList, setTargetUserFileList] = useState([]);
@@ -177,9 +177,9 @@ function DataroomDetails(props) {
       setUserDataroomIds(userDataroomIds);
       setUserDataroomMap(userDataroomMap);
 
-      if (selectedUser && !userIds.includes(selectedUser)) {
-        setSelectedUser(null);
-      }
+      // if (selectedUser && !userIds.includes(selectedUser)) {
+      //   setSelectedUser(null);
+      // }
       
       return Promise.all(list.map((item) => {
         return api.getUserDataroomFile(dataroomID, item.user.id).then((result1) => {
@@ -188,16 +188,14 @@ function DataroomDetails(props) {
             return { id: m.id, dataroomUserfileId: item.id, file: m.file.id, user: item.user.id };
           });
         });
-      }))
-
-      .then(results => {
-        const list = results.reduce((a,b) => a.concat(b), [])
+      })).then(results => {
+        const list = results.reduce((a, b) => a.concat(b), [])
         setFileUserList(list);
-        if (selectedUser) {
-          let _list = list.filter(item => item.user == selectedUser)
-          setTargetUserFileList(_list);
-        }
-      })
+        // if (selectedUser) {
+        //   let _list = list.filter(item => item.user == selectedUser)
+        //   setTargetUserFileList(_list);
+        // }
+      });
 
     }).catch(error => {
       handleError(error)
