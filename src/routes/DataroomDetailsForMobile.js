@@ -154,7 +154,7 @@ function DataroomDetails(props) {
   // }
 
   function getAllUserFile() {
-    api.queryUserDataRoom({ dataroom: dataroomID }).then(result => {
+    api.queryUserDataRoom({ dataroom: dataroomID }).then(async result => {
       let list = result.data.data
       list = list.map(m => {
         const user = m.user;
@@ -187,27 +187,46 @@ function DataroomDetails(props) {
         setSelectedUser(null);
       }
       
-      return Promise.all(list.map((item) => {
-        return api.getUserDataroomFile(dataroomID, item.user.id).then((result1) => {
-          const { data } = result1.data;
-          return data.filter(f => f.file !== null).map((m) => {
-            return { id: m.id, dataroomUserfileId: item.id, file: m.file.id, user: item.user.id };
-          });
-        });
-      }))
+      // return Promise.all(list.map((item) => {
+      //   return api.getUserDataroomFile(dataroomID, item.user.id).then((result1) => {
+      //     const { data } = result1.data;
+      //     return data.filter(f => f.file !== null).map((m) => {
+      //       return { id: m.id, dataroomUserfileId: item.id, file: m.file.id, user: item.user.id };
+      //     });
+      //   });
+      // }))
 
-      .then(results => {
-        const list = results.reduce((a,b) => a.concat(b), [])
-        setFileUserList(list);
-        if (selectedUser) {
-          let _list = list.filter(item => item.user == selectedUser)
-          setTargetUserFileList(_list);
-        }
-      })
+      // .then(results => {
+      //   const list = results.reduce((a,b) => a.concat(b), [])
+      //   setFileUserList(list);
+      //   if (selectedUser) {
+      //     let _list = list.filter(item => item.user == selectedUser)
+      //     setTargetUserFileList(_list);
+      //   }
+      // })
+
+      const result1 = [];
+      for (let index = 0; index < list.length; index++) {
+        const item = list[index];
+        const userFile = await getUserDataroomFile(dataroomID, item);
+        result1.push(userFile);
+      }
+      const userFileList = result1.reduce((a, b) => a.concat(b), []);
+      setFileUserList(userFileList);
 
     }).catch(error => {
       handleError(error)
     })
+  }
+
+  async function getUserDataroomFile(dataroomID, item) {
+    return api.getUserDataroomFile(dataroomID, item.user.id)
+    .then((result1) => {
+      const { data } = result1.data;
+      return data.filter(f => f.file !== null).map((m) => {
+        return { id: m.id, dataroomUserfileId: item.id, file: m.file.id, user: item.user.id };
+      });
+    });
   }
 
   function formatData(data) {
