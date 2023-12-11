@@ -163,7 +163,6 @@ function DataroomDetails(props) {
 
       const users = list.map(item => item.user)
       const userIds = users.map(item => item.id)
-      // checkUserNewFile(userIds);
       const userDataroomIds = list.map(item => item.id)
       var userDataroomMap = {}
       userIds.forEach((userId, index) => {
@@ -176,10 +175,6 @@ function DataroomDetails(props) {
       setUserOptions(userOptions);
       setUserDataroomIds(userDataroomIds);
       setUserDataroomMap(userDataroomMap);
-
-      // if (selectedUser && !userIds.includes(selectedUser)) {
-      //   setSelectedUser(null);
-      // }
       
       return Promise.all(list.map((item) => {
         return api.getUserDataroomFile(dataroomID, item.user.id).then((result1) => {
@@ -191,10 +186,6 @@ function DataroomDetails(props) {
       })).then(results => {
         const list = results.reduce((a, b) => a.concat(b), [])
         setFileUserList(list);
-        // if (selectedUser) {
-        //   let _list = list.filter(item => item.user == selectedUser)
-        //   setTargetUserFileList(_list);
-        // }
       });
 
     }).catch(error => {
