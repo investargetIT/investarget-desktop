@@ -16,6 +16,7 @@ import {
   EditOutlined,
   ExportOutlined,
   DeleteOutlined,
+  InfoCircleOutlined,
 } from '@ant-design/icons';
 import UploadDir from './UploadDir';
 import _ from 'lodash';
@@ -1366,7 +1367,7 @@ function DataroomFileManage({
                     <div>
                       <div style={{ display: 'flex', backgroundColor: '#f5f5f5', padding: '14px 0 14px 20px', lineHeight: '22px', fontSize: 14, fontWeight: 'bold' }}>
                         <div style={{ flex: 1, marginRight: 20 }}>文件夹名称</div>
-                        <div style={{ flex: 2 }}>可见用户</div>
+                        <div style={{ flex: 2 }}>可见用户 <Tooltip title="设置文件夹的可见性将会影响该文件夹下所有文件的可见性，请谨慎操作！"><InfoCircleOutlined style={{ marginLeft: 8 }} /></Tooltip></div>
                       </div>
                       <div style={{ padding: '16px 0' }}>
                         <div style={{ display: 'flex', padding: '10px 0 10px 20px', lineHeight: '22px', fontSize: 14 }}>
