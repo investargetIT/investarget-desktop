@@ -637,7 +637,7 @@ function DataroomDetails(props) {
 
 
   async function toggleUserDataroomFiles(user, data, isAdd) {
-    const dataroomUserfile = userDataroomMap[user];
+        const dataroomUserfile = userDataroomMap[user];
 
     // Delete
     if (!isAdd) {
@@ -682,14 +682,25 @@ function DataroomDetails(props) {
     }
   }
 
-  function handleSelectFileUser(file, user) {
-    const data = { file };
-    toggleUserDataroomFiles(user, [data], true);
+  function handleSelectFileUser(file, user, subFiles) {
+    let data = [file];
+    if (subFiles && subFiles.length > 0) {
+      const userFiles = fileUserList.filter(f => f.user === user);
+      const userFileIDs = userFiles.map(m => m.file);
+      const subFilesToAdd = subFiles.filter(f => !userFileIDs.includes(f));
+      data = data.concat(subFilesToAdd);
+    }
+    toggleUserDataroomFiles(user, data.map(m => ({ file: m })), true);
   }
 
-  function handleDeselectFileUser(file, user) {
+  function handleDeselectFileUser(file, user, subFiles) {
     const removedFiles = fileUserList.filter(item => item.file === file && item.user === user);
-    toggleUserDataroomFiles(user, removedFiles, false);
+    let data = removedFiles;
+    if (subFiles && subFiles.length > 0) {
+      const subFilesToRemove = fileUserList.filter(item => subFiles.includes(item.file) && item.user === user);
+      data = data.concat(subFilesToRemove);
+    }
+    toggleUserDataroomFiles(user, data, false);
   }
 
   // function handleOrgBDExpand(_, record) {

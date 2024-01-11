@@ -445,7 +445,7 @@ function DataroomFileManage({
   function getVisibleUsersOfFile(fileID) {
     const result = fileUserList.filter(item => item.file == fileID)
       .map(item => String(item.user));
-    return result;
+        return result;
   }
 
   function renderTagContent(props) {
@@ -1359,41 +1359,74 @@ function DataroomFileManage({
                 </div>
               }
 
-            {
-              !isCompanyDataroom && !selectedFile.isFile && (hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
-              <div>
-                <div style={{ display: 'flex', backgroundColor: '#f5f5f5', padding: '14px 0 14px 20px', lineHeight: '22px', fontSize: 14, fontWeight: 'bold' }}>
-                  <div style={{ flex: 1, marginRight: 20 }}>文件名称</div>
-                  <div style={{ flex: 2 }}>可见用户</div>
-                </div>
-                <div style={{ padding: '16px 0' }}>
-                  {subFilesOfSelectedFolder.length > 0 ? subFilesOfSelectedFolder.map(m => (
-                    <div key={m.id} style={{ display: 'flex', padding: '10px 0 10px 20px', lineHeight: '22px', fontSize: 14 }}>
-                      <div style={{ flex: 1, color: '#595959', marginRight: 20 }}><Tooltip title={`修改时间：${m.date && time(m.date + m.timezone)}`}>{m.filename}</Tooltip></div>
-                      <div style={{ flex: 2 }}>
-                        <Select
-                          mode="multiple"
-                          showArrow
-                          tagRender={props => renderTagContentOfFile(props, m.id)}
-                          style={{ width: '100%' }}
-                          value={getVisibleUsersOfFile(m.id)}
-                          optionLabelProp="children"
-                          filterOption={(input, option) => option.props.children.indexOf(input) >= 0}
-                          onSelect={userId => onSelectFileUser(m.id, Number(userId))}
-                          onDeselect={userId => onDeselectFileUser(m.id, Number(userId))}
-                        >
-                          {userOptions.map(option => (
-                            <Select.Option
-                              key={option.value}
-                              value={String(option.value)}>{option.label}</Select.Option>
-                          ))}
-                        </Select>
+              {
+                !isCompanyDataroom && !selectedFile.isFile && (hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
+                <div>
+                  {subFilesOfSelectedFolder.length > 0 && (
+                    <div>
+                      <div style={{ display: 'flex', backgroundColor: '#f5f5f5', padding: '14px 0 14px 20px', lineHeight: '22px', fontSize: 14, fontWeight: 'bold' }}>
+                        <div style={{ flex: 1, marginRight: 20 }}>文件夹名称</div>
+                        <div style={{ flex: 2 }}>可见用户</div>
+                      </div>
+                      <div style={{ padding: '16px 0' }}>
+                        <div style={{ display: 'flex', padding: '10px 0 10px 20px', lineHeight: '22px', fontSize: 14 }}>
+                          <div style={{ flex: 1, color: '#595959', marginRight: 20 }}><Tooltip title={`修改时间：${selectedFile.date && time(selectedFile.date + selectedFile.timezone)}`}>{selectedFile.filename}</Tooltip></div>
+                          <div style={{ flex: 2 }}>
+                            <Select
+                              mode="multiple"
+                              showArrow
+                              tagRender={props => renderTagContentOfFile(props, selectedFile.id)}
+                              style={{ width: '100%' }}
+                              value={getVisibleUsersOfFile(selectedFile.id)}
+                              optionLabelProp="children"
+                              filterOption={(input, option) => option.props.children.indexOf(input) >= 0}
+                              onSelect={userId => onSelectFileUser(selectedFile.id, Number(userId), subFilesOfSelectedFolder.map(m => m.id))}
+                              onDeselect={userId => onDeselectFileUser(selectedFile.id, Number(userId), subFilesOfSelectedFolder.map(m => m.id))}
+                            >
+                              {userOptions.map(option => (
+                                <Select.Option
+                                  key={option.value}
+                                  value={String(option.value)}>{option.label}</Select.Option>
+                              ))}
+                            </Select>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  )) : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+                  )}
+
+                  <div style={{ display: 'flex', backgroundColor: '#f5f5f5', padding: '14px 0 14px 20px', lineHeight: '22px', fontSize: 14, fontWeight: 'bold' }}>
+                    <div style={{ flex: 1, marginRight: 20 }}>文件名称</div>
+                    <div style={{ flex: 2 }}>可见用户</div>
+                  </div>
+                  <div style={{ padding: '16px 0' }}>
+                    {subFilesOfSelectedFolder.length > 0 ? subFilesOfSelectedFolder.map(m => (
+                      <div key={m.id} style={{ display: 'flex', padding: '10px 0 10px 20px', lineHeight: '22px', fontSize: 14 }}>
+                        <div style={{ flex: 1, color: '#595959', marginRight: 20 }}><Tooltip title={`修改时间：${m.date && time(m.date + m.timezone)}`}>{m.filename}</Tooltip></div>
+                        <div style={{ flex: 2 }}>
+                          <Select
+                            mode="multiple"
+                            showArrow
+                            tagRender={props => renderTagContentOfFile(props, m.id)}
+                            style={{ width: '100%' }}
+                            value={getVisibleUsersOfFile(m.id)}
+                            optionLabelProp="children"
+                            filterOption={(input, option) => option.props.children.indexOf(input) >= 0}
+                            onSelect={userId => onSelectFileUser(m.id, Number(userId))}
+                            onDeselect={userId => onDeselectFileUser(m.id, Number(userId))}
+                          >
+                            {userOptions.map(option => (
+                              <Select.Option
+                                key={option.value}
+                                value={String(option.value)}>{option.label}</Select.Option>
+                            ))}
+                          </Select>
+                        </div>
+                      </div>
+                    )) : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+                  </div>
                 </div>
-              </div>
-            }
+              }
 
               {selectedFile.isFile && previewFileUrl &&
                 <div>
