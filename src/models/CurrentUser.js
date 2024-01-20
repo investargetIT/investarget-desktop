@@ -41,15 +41,17 @@ export default {
       const { token, user_info, menulist, permissions, is_superuser } = data
       const userInfo = { ...user_info, token, menulist, permissions, is_superuser }
       const { last_login: lastLogin } = userInfo;
+      if (!lastLogin) {
+        yield put(routerRedux.replace('/password'));
+        return;
+      }
       localStorage.setItem('user_info', JSON.stringify(userInfo))
       yield put({
         type: 'save',
         userInfo
       })
       let url = '/app';
-      if (!lastLogin) {
-        url = 'password';
-      } else if (redirect) {
+      if (redirect) {
         url = decodeURIComponent(redirect);
       } else if (!is_superuser && permissions.includes('usersys.as_investor')) {
         url = '/app/dataroom/project/list';
