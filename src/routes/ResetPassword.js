@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Link, withRouter } from 'dva/router'
-import { Form, Button, Input, message } from 'antd'
+import { Form, Button, Input, message, Alert } from 'antd'
 import { i18n, handleError } from '../utils/util'
 import * as api from '../api'
 import { ApiError } from '../utils/request'
@@ -22,6 +22,7 @@ class ResetPassword extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      errorMsg: null,
       smstoken: null,
       fetchSmsCodeValue: null,
       intervalId: null,
@@ -55,6 +56,9 @@ class ResetPassword extends React.Component {
       this.props.history.push('/login');
     }).catch(error => {
       this.setState({ submitLoading: false });
+      if (error.code === 2002) {
+        this.setState({ errorMsg: error.detail });
+      }
       handleError(error)
     })
   }
@@ -112,6 +116,9 @@ class ResetPassword extends React.Component {
       })
     }).catch(error => {
       this.setState({ loading: false })
+      if (error.code === 2002) {
+        this.setState({ errorMsg: '用户不存在' });
+      }
       this.props.dispatch({ type: 'app/findError', payload: error })
     })
   }
@@ -141,6 +148,15 @@ class ResetPassword extends React.Component {
           <div className="login-register-form">
             <h1 className="login-register-form__title">{i18n('account.reset_password')}</h1>
             <p className="login-register-form__subtitle">{i18n('account.reset_info')}</p>
+
+            {this.state.errorMsg &&
+              <Alert
+                style={{ marginBottom: 20 }}
+                message={this.state.errorMsg}
+                type="error"
+                showIcon
+              />
+            }
 
             <Form.Item
               name="mobileInfo"
