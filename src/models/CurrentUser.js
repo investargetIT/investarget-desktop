@@ -40,13 +40,16 @@ export default {
       const { data } = yield call(api.login, { username, password, union_id })
       const { token, user_info, menulist, permissions, is_superuser } = data
       const userInfo = { ...user_info, token, menulist, permissions, is_superuser }
+      const { last_login: lastLogin } = userInfo;
       localStorage.setItem('user_info', JSON.stringify(userInfo))
       yield put({
         type: 'save',
         userInfo
       })
       let url = '/app';
-      if (redirect) {
+      if (!lastLogin) {
+        url = 'password';
+      } else if (redirect) {
         url = decodeURIComponent(redirect);
       } else if (!is_superuser && permissions.includes('usersys.as_investor')) {
         url = '/app/dataroom/project/list';
