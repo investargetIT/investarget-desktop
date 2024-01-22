@@ -1,6 +1,6 @@
 import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
-import { i18n, isLogin, hasPerm } from '../utils/util';
+import { i18n, isLogin, hasPerm, getURLParamValue } from '../utils/util';
 import { Form, message } from 'antd'
 import { Password, ConfirmPassword, OldPassword, Submit } from '../components/Form'
 import { modifyPassword } from '../api'
@@ -9,6 +9,7 @@ import { routerRedux } from 'dva/router'
 
 function ModifyPwd(props) {
 
+  const reset = getURLParamValue(props, 'reset');
   const [form] = Form.useForm();
 
   function handleSubmit(values) {
@@ -33,7 +34,9 @@ function ModifyPwd(props) {
     <LeftRightLayout
       location={props.location}
       title={i18n("account.change_password")}
-      name="为了您的账户安全，请勿使用默认密码"
+      name={!!reset && '为了您的账户安全，请勿使用默认密码'}
+      hideHeader={!!reset}
+      hideSider={!!reset}
     >
 
       <Form form={form} style={{ width: 500, margin: '0 auto' }} onFinish={handleSubmit}>

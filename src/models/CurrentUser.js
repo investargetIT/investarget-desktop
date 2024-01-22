@@ -46,8 +46,8 @@ export default {
         userInfo
       })
       let url = '/app';
-      if (password == 'Aa123456789') {
-        url = '/app/modify_password';
+      if (password == 'Aa123456') {
+        url = '/app/modify_password?reset=true';
       } else if (redirect) {
         url = decodeURIComponent(redirect);
       } else if (!is_superuser && permissions.includes('usersys.as_investor')) {
