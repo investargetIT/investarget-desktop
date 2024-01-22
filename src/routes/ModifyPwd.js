@@ -32,7 +32,9 @@ function ModifyPwd(props) {
   return (
     <LeftRightLayout
       location={props.location}
-      title={i18n("account.change_password")}>
+      title={i18n("account.change_password")}
+      name="为了您的账户安全，请勿使用默认密码"
+    >
 
       <Form form={form} style={{ width: 500, margin: '0 auto' }} onFinish={handleSubmit}>
         <OldPassword />
