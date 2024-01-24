@@ -75,7 +75,7 @@ import NewOrgBDNext from './routes/NewOrgBDNext';
 // import AddMeetingBD from './routes/AddMeetingBD';
 import CompanyDataRoomList from './routes/CompanyDataRoomList';
 // import CompanyDataRoomDetail from './routes/CompanyDataRoomDetail';
-import DataroomDetailsForComapnyFile from './routes/DataroomDetailsForComapnyFile';
+import DataroomDetailsForCompanyFile from './routes/DataroomDetailsForCompanyFile';
 import OrgBDProjList from './routes/OrgBDProjList';
 import AddReport from './routes/AddReport';
 import ReportDetail from './routes/ReportDetail';
@@ -146,7 +146,7 @@ function RouterConfig({ history }) {
         <Route path="/app/report/add" component={AddReport} />
         <Route path="/app/report/list" component={ReportList} />
         <Route path="/app/report/:id" component={ReportDetail} />
-        <Route path="/app/dataroom/company/detail" component={DataroomDetailsForComapnyFile} />
+        <Route path="/app/dataroom/company/detail" component={DataroomDetailsForCompanyFile} />
         <Route path="/app/dataroom/company/list" component={CompanyDataRoomList} />
         <Route path="/app/dataroom/project/list" component={DataRoomList} />
         <Route path="/app/dataroom/detail" component={DataroomDetails} />
