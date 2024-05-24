@@ -46,6 +46,9 @@ class LoginContainer extends React.Component {
     } else if (source === 6) {
       logo = '/images/rejutec_logo.jpeg';
       bg = 'url(/images/investarget_bg.png)';
+    } else if (source === 7) {
+      logo = '/images/logo_cidi.jpg';
+      bg = 'url(/images/investarget_bg.png)';
     }
     const bodyWrapStyle = {
       margin: '0 auto', 

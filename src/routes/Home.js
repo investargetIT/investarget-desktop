@@ -15,6 +15,7 @@ const options = [
   { label: <img style={{ height: 40, verticalAlign: 'middle' }} src="/images/logo_delova_biotech.png" />, value: 4 },
   { label: <img style={{ height: 40, verticalAlign: 'middle' }} src="/images/logo_hongyun.jpg" />, value: 5 },
   { label: <img style={{ height: 36, verticalAlign: 'middle' }} src="/images/rejutec_logo.jpeg" />, value: 6 },
+  { label: <img style={{ height: 36, verticalAlign: 'middle' }} src="/images/logo_cidi.jpg" />, value: 7 },
 ]
 let source
 
@@ -89,6 +90,9 @@ class Home extends React.Component {
         break;
       case 'rejutec.investarget.com':
         localStorage.setItem('source', 6);
+        break;
+      case 'cidi.investarget.com':
+        localStorage.setItem('source', 7);
         break;
     }
   }
