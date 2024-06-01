@@ -52,6 +52,9 @@
         case 'cidi.investarget.com':
           localStorage.setItem('source', 7);
           break;
+        case 'genohopebio.investarget.com':
+          localStorage.setItem('source', 8);
+          break;
       }
     }
     setSource();
@@ -90,6 +93,8 @@
       document.title = 'Rejutec';
     } else if (source === 7) {
       document.title = '希迪智驾';
+    } else if (source === 8) {
+      document.title = '基诺厚普';
     } else {
       document.title = 'Unknown Datasource';
       // window.location.href = '/';
