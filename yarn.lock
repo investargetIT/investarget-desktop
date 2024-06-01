@@ -2159,7 +2159,7 @@ currently-unhandled@^0.4.1:
 
 d3-array@^1.2.0:
   version "1.2.4"
-  resolved "https://registry.nlark.com/d3-array/download/d3-array-1.2.4.tgz#635ce4d5eea759f6f605863dbcfc30edc737f71f"
+  resolved "https://registry.npmmirror.com/d3-array/download/d3-array-1.2.4.tgz#635ce4d5eea759f6f605863dbcfc30edc737f71f"
   integrity sha1-Y1zk1e6nWfb2BYY9vPww7cc39x8=
 
 d3-collection@1:
@@ -2169,29 +2169,29 @@ d3-collection@1:
 
 d3-color@1:
   version "1.4.1"
-  resolved "https://registry.nlark.com/d3-color/download/d3-color-1.4.1.tgz#c52002bf8846ada4424d55d97982fef26eb3bc8a"
+  resolved "https://registry.npmmirror.com/d3-color/download/d3-color-1.4.1.tgz#c52002bf8846ada4424d55d97982fef26eb3bc8a"
   integrity sha1-xSACv4hGraRCTVXZeYL+8m6zvIo=
 
 d3-format@1:
   version "1.4.5"
-  resolved "https://registry.nlark.com/d3-format/download/d3-format-1.4.5.tgz#374f2ba1320e3717eb74a9356c67daee17a7edb4"
+  resolved "https://registry.npmmirror.com/d3-format/download/d3-format-1.4.5.tgz#374f2ba1320e3717eb74a9356c67daee17a7edb4"
   integrity sha1-N08roTIONxfrdKk1bGfa7hen7bQ=
 
 d3-interpolate@1, d3-interpolate@^1.3.0:
   version "1.4.0"
-  resolved "https://registry.nlark.com/d3-interpolate/download/d3-interpolate-1.4.0.tgz#526e79e2d80daa383f9e0c1c1c7dcc0f0583e987"
+  resolved "https://registry.npmmirror.com/d3-interpolate/download/d3-interpolate-1.4.0.tgz#526e79e2d80daa383f9e0c1c1c7dcc0f0583e987"
   integrity sha1-Um554tgNqjg/ngwcHH3MDwWD6Yc=
   dependencies:
     d3-color "1"
 
 d3-path@1:
   version "1.0.9"
-  resolved "https://registry.nlark.com/d3-path/download/d3-path-1.0.9.tgz#48c050bb1fe8c262493a8caf5524e3e9591701cf"
+  resolved "https://registry.npmmirror.com/d3-path/download/d3-path-1.0.9.tgz#48c050bb1fe8c262493a8caf5524e3e9591701cf"
   integrity sha1-SMBQux/owmJJOoyvVSTj6VkXAc8=
 
 d3-scale@^2.1.0:
   version "2.2.2"
-  resolved "https://registry.nlark.com/d3-scale/download/d3-scale-2.2.2.tgz#4e880e0b2745acaaddd3ede26a9e908a9e17b81f"
+  resolved "https://registry.npmmirror.com/d3-scale/download/d3-scale-2.2.2.tgz#4e880e0b2745acaaddd3ede26a9e908a9e17b81f"
   integrity sha1-TogOCydFrKrd0+3iap6Qip4XuB8=
   dependencies:
     d3-array "^1.2.0"
@@ -2203,21 +2203,21 @@ d3-scale@^2.1.0:
 
 d3-shape@^1.2.0:
   version "1.3.7"
-  resolved "https://registry.nlark.com/d3-shape/download/d3-shape-1.3.7.tgz#df63801be07bc986bc54f63789b4fe502992b5d7"
+  resolved "https://registry.npmmirror.com/d3-shape/download/d3-shape-1.3.7.tgz#df63801be07bc986bc54f63789b4fe502992b5d7"
   integrity sha1-32OAG+B7yYa8VPY3ibT+UCmStdc=
   dependencies:
     d3-path "1"
 
 d3-time-format@2:
   version "2.3.0"
-  resolved "https://registry.nlark.com/d3-time-format/download/d3-time-format-2.3.0.tgz#107bdc028667788a8924ba040faf1fbccd5a7850"
+  resolved "https://registry.npmmirror.com/d3-time-format/download/d3-time-format-2.3.0.tgz#107bdc028667788a8924ba040faf1fbccd5a7850"
   integrity sha1-EHvcAoZneIqJJLoED68fvM1aeFA=
   dependencies:
     d3-time "1"
 
 d3-time@1:
   version "1.1.0"
-  resolved "https://registry.nlark.com/d3-time/download/d3-time-1.1.0.tgz#b1e19d307dae9c900b7e5b25ffc5dcc249a8a0f1"
+  resolved "https://registry.npmmirror.com/d3-time/download/d3-time-1.1.0.tgz#b1e19d307dae9c900b7e5b25ffc5dcc249a8a0f1"
   integrity sha1-seGdMH2unJALflsl/8XcwkmooPE=
 
 d3@^3.5.6:
@@ -6516,7 +6516,7 @@ react-redux@5.0.7:
 
 react-resize-detector@^2.3.0:
   version "2.3.0"
-  resolved "https://registry.nlark.com/react-resize-detector/download/react-resize-detector-2.3.0.tgz#57bad1ae26a28a62a2ddb678ba6ffdf8fa2b599c"
+  resolved "https://registry.npmmirror.com/react-resize-detector/download/react-resize-detector-2.3.0.tgz#57bad1ae26a28a62a2ddb678ba6ffdf8fa2b599c"
   integrity sha1-V7rRriaiimKi3bZ4um/9+PorWZw=
   dependencies:
     lodash.debounce "^4.0.8"
@@ -6705,7 +6705,7 @@ recharts-scale@^0.4.2:
 
 recharts@^1.8.5:
   version "1.8.5"
-  resolved "https://registry.nlark.com/recharts/download/recharts-1.8.5.tgz?cache=0&sync_timestamp=1626144650796&other_urls=https%3A%2F%2Fregistry.nlark.com%2Frecharts%2Fdownload%2Frecharts-1.8.5.tgz#ca94a3395550946334a802e35004ceb2583fdb12"
+  resolved "https://registry.npmmirror.com/recharts/download/recharts-1.8.5.tgz?cache=0&sync_timestamp=1626144650796&other_urls=https%3A%2F%2Fregistry.nlark.com%2Frecharts%2Fdownload%2Frecharts-1.8.5.tgz#ca94a3395550946334a802e35004ceb2583fdb12"
   integrity sha1-ypSjOVVQlGM0qALjUATOslg/2xI=
   dependencies:
     classnames "^2.2.5"
