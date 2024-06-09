@@ -29,7 +29,7 @@ class Agreement extends React.Component {
   render() {
     // const { basename } = this.props.location
     return (
-      <LeftRightLayout location={this.props.location} title={i18n('account.term_of_service')}>
+      <div>
         {
           window.LANG === "en" ? (
             <div>
@@ -139,7 +139,7 @@ class Agreement extends React.Component {
             </div>
           )
         }
-      </LeftRightLayout>
+      </div>
     )
   }
 }

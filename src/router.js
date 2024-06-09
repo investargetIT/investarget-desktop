@@ -57,7 +57,7 @@ import InboxList from './routes/InboxList'
 // import SelectUserToPosition from './routes/SelectUserToPosition'
 import AccessDenied from './routes/AccessDenied'
 // import SelectTraderToRelation from './routes/SelectTraderToRelation'
-// import Agreement from './routes/Agreement'
+import Agreement from './routes/Agreement'
 import ProjectLibraryItem from './routes/ProjectLibraryItem';
 import ProjectBDList from './routes/ProjectBDList';
 import AddProjectBD from './routes/AddProjectBD';
@@ -101,6 +101,7 @@ function RouterConfig({ history }) {
     <Router history={history}>
       <Switch>
         <Route exact path="/" component={Home} />
+        <Route path="/agreement" component={Agreement} />
         <Route path="/login" component={Login} />
         <Route path="/mlogin" component={MLogin} />
         <Route path="/password" component={ResetPassword} />
@@ -181,7 +182,6 @@ function RouterConfig({ history }) {
         <Route path="/app/marketplace/:id" component={MarketPlaceDetail} />
         <Route path={URI_13} component={MyTrader} />
         <Route path="/app/trader/add" component={SelectTraderToRelation} />
-        <Route path="/app/agreement" component={Agreement} />
         <Route path="/app/schedule/list" component={ScheduleList} />
         <Route path="/app/trader/:id" component={TraderDetail} />
         <Route path="/app/meeting/bd" component={MeetingBDList} />
