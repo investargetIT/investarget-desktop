@@ -1077,7 +1077,7 @@ function DataroomFileManage({
 
     notification.open({
       key: downloadNotificationKey,
-      message: 'Dataroom 文件打包',
+      message: <div>Dataroom 文件打包&nbsp;<span style={{ color: 'red' }}>退出后，打包会继续进行～～～</span></div>,
       description: <MyProgress
         notificationKey={downloadNotificationKey}
         dataroomId={dataroomID}
